@@ -96,28 +96,30 @@
     </div>
 
     <!-- Logo - Top Left -->
-    <a href="https://github.com/Tencent/WeKnora" target="_blank" class="header-logo" :title="$t('common.github')">
-      <img src="@/assets/img/weknora.png" alt="WeKnora" class="logo-image" />
-    </a>
+    <RouterLink to="/" class="header-logo" aria-label="HelmsKB">
+      <BrandLogo class="logo-image" tagline />
+    </RouterLink>
 
     <!-- Header Links - Top Right -->
     <div class="header-links">
-      <a href="https://weknora.weixin.qq.com" target="_blank" class="header-link" :title="$t('common.website')">
+      <a href="https://weknora.weixin.qq.com/docs/" target="_blank" rel="noopener noreferrer"
+        class="header-link" :title="$t('common.documentation') + ' · WeKnora'">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
           stroke-linecap="round">
           <circle cx="12" cy="12" r="10" />
           <line x1="2" y1="12" x2="22" y2="12" />
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
         </svg>
-        <span class="link-text">{{ $t('common.website') }}</span>
+        <span class="link-text">{{ $t('common.documentation') }}</span>
       </a>
 
-      <a href="https://github.com/Tencent/WeKnora" target="_blank" class="header-link" :title="$t('common.info')">
+      <a href="https://github.com/raylu798-art/HelmsKB" target="_blank" rel="noopener noreferrer"
+        class="header-link" :title="$t('common.openSource') + ' · HelmsKB'">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
           <path
             d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
         </svg>
-        <span class="link-text">GitHub</span>
+        <span class="link-text">{{ $t('common.openSource') }}</span>
       </a>
 
       <div class="language-switch">
@@ -363,6 +365,7 @@ import {
 } from '@/api/auth'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
+import BrandLogo from '@/components/BrandLogo.vue'
 
 // Import screenshot images
 import screenshot1 from '@/assets/img/screenshot-1.svg'
@@ -1059,6 +1062,7 @@ onMounted(async () => {
 /* Left Showcase Section */
 .showcase-section {
   flex: 0 0 52%;
+  min-width: 0;
   display: flex;
   align-items: flex-end;
   padding: 100px 30px 100px 50px;
@@ -1068,6 +1072,7 @@ onMounted(async () => {
 
 .showcase-content {
   width: 100%;
+  min-width: 0;
   max-width: 600px;
   position: relative;
   z-index: 2;
@@ -1115,6 +1120,7 @@ onMounted(async () => {
 /* Carousel */
 .carousel-container {
   width: 100%;
+  min-width: 0;
   margin-top: 48px;
 }
 
@@ -1171,6 +1177,7 @@ onMounted(async () => {
 /* Right Form Section */
 .form-section {
   flex: 0 0 48%;
+  min-width: 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -1181,6 +1188,7 @@ onMounted(async () => {
 
 .form-panel {
   width: 100%;
+  min-width: 0;
   max-width: 480px;
   margin-bottom: 60px;
   position: relative;
@@ -1193,9 +1201,20 @@ onMounted(async () => {
   left: 50px;
   z-index: 100;
   cursor: pointer;
+  text-decoration: none;
+  border-radius: 6px;
+
+  &:focus-visible {
+    outline: 2px solid var(--td-brand-color);
+    outline-offset: 6px;
+  }
 
   .logo-image {
-    width: 120px;
+    --brand-logo-color: #0f172a;
+    --brand-logo-accent: #2563eb;
+    --brand-logo-tagline-color: #0f172a;
+    --brand-logo-font-size: 32px;
+    width: auto;
     height: auto;
   }
 }
@@ -1630,6 +1649,18 @@ onMounted(async () => {
 
 /* Responsive Design */
 @media (max-width: 1024px) {
+  .showcase-section {
+    padding: 100px 16px 60px 24px;
+  }
+
+  .form-section {
+    padding: 112px 24px 60px 16px;
+  }
+
+  .form-card {
+    padding: 28px 20px;
+  }
+
   .knowledge-node:nth-of-type(n + 13) {
     display: none;
   }
@@ -1647,7 +1678,8 @@ onMounted(async () => {
     left: 40px;
 
     .logo-image {
-      width: 100px;
+      --brand-logo-font-size: 30px;
+      width: auto;
     }
   }
 
@@ -1695,7 +1727,8 @@ onMounted(async () => {
     left: 30px;
 
     .logo-image {
-      width: 80px;
+      --brand-logo-font-size: 28px;
+      width: auto;
     }
   }
 
@@ -1755,7 +1788,8 @@ onMounted(async () => {
     left: 20px;
 
     .logo-image {
-      width: 70px;
+      --brand-logo-font-size: 23px;
+      width: auto;
     }
   }
 
@@ -1777,6 +1811,10 @@ onMounted(async () => {
     right: 14px;
     gap: 6px;
     flex-wrap: wrap;
+
+    .link-text {
+      display: none;
+    }
 
     .header-link {
       padding: 7px 10px;
@@ -1821,10 +1859,6 @@ html[theme-mode="dark"] {
 
   .connection-line {
     stroke: rgba(255, 255, 255, 0.25);
-  }
-
-  .header-logo .logo-image {
-    filter: invert(1) hue-rotate(180deg) brightness(1.1);
   }
 
   .header-link {

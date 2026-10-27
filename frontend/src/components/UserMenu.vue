@@ -501,7 +501,7 @@ const openDocs = () => {
 // 打开 GitHub
 const openGithub = () => {
   menuVisible.value = false
-  window.open('https://github.com/Tencent/WeKnora', '_blank')
+  window.open('https://github.com/raylu798-art/HelmsKB', '_blank', 'noopener,noreferrer')
 }
 
 // 注销

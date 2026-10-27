@@ -1,0 +1,9 @@
+**
+!frontend/
+!frontend/dist/
+!frontend/dist/**
+!frontend/Dockerfile.helmskb
+!LICENSE
+!THIRD_PARTY_NOTICES.md
+!licenses/
+!licenses/**

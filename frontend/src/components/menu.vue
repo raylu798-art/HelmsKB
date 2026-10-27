@@ -2,10 +2,10 @@
     <div class="aside_box" :class="{ 'aside_box--collapsed': uiStore.sidebarCollapsed, 'aside_box--resizing': uiStore.sidebarResizing }">
         <!-- 展开时：Logo + 搜索/折叠按钮同行 -->
         <div class="logo_row" v-if="!uiStore.sidebarCollapsed">
-            <div class="logo_box" @click="router.push('/platform/knowledge-bases')" style="cursor: pointer;">
-                <img class="logo" src="@/assets/img/weknora.png" alt="">
+            <RouterLink class="logo_box" to="/platform/knowledge-bases" aria-label="HelmsKB">
+                <BrandLogo class="logo" />
                 <sup v-if="isLiteEdition" class="lite-badge">Lite</sup>
-            </div>
+            </RouterLink>
             <div class="logo_actions">
                 <t-tooltip placement="bottom">
                     <template #content>
@@ -276,6 +276,7 @@ import { useUIStore } from '@/stores/ui';
 import { useCommandPaletteStore } from '@/stores/commandPalette';
 import { MessagePlugin, DialogPlugin, Icon as TIcon } from "tdesign-vue-next";
 import UserMenu from '@/components/UserMenu.vue';
+import BrandLogo from '@/components/BrandLogo.vue';
 import TenantSelector from '@/components/TenantSelector.vue';
 import { useI18n } from 'vue-i18n';
 import { useEditorResourcesStore } from '@/stores/editorResources';
@@ -1369,9 +1370,19 @@ const resizeSidebar = (delta: number, keyboard: boolean) => {
         flex: 1;
         min-width: 0;
         overflow: hidden;
+        text-decoration: none;
+        border-radius: 4px;
+
+        &:focus-visible {
+            outline: 2px solid var(--td-brand-color);
+            outline-offset: 2px;
+        }
 
         .logo {
-            width: 108px;
+            --brand-logo-font-size: 22px;
+            --brand-logo-accent: #2563eb;
+            width: auto;
+            max-width: 128px;
             height: auto;
         }
 
@@ -1975,11 +1986,6 @@ const resizeSidebar = (delta: number, keyboard: boolean) => {
 }
 </style>
 <style lang="less">
-// Dark mode: invert dark logo to light
-html[theme-mode="dark"] .aside_box .logo_box .logo {
-    filter: invert(1) hue-rotate(180deg);
-}
-
 // Dark mode: 滚动条在深色背景下需要更亮的颜色才看得见
 html[theme-mode="dark"] .aside_box .menu_top:hover {
     scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
