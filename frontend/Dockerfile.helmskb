@@ -1,16 +1,18 @@
 # Package the locally built HelmsKB UI on the same pinned upstream runtime.
-# Build first with npm ci && npm run build, then:
+# Install frontend and website-docs dependencies; run npm run build:with-docs in frontend, then:
 # From the repository root:
-# docker build -f frontend/Dockerfile.helmskb -t p006-helmskb-local-ui:0.8.3-brand.4 .
+# docker build -f frontend/Dockerfile.helmskb -t p006-helmskb-local-ui:0.8.3-brand.5 .
 FROM docker.m.daocloud.io/wechatopenai/weknora-ui:v0.8.3@sha256:94f7992e963b1e2e3b8dc429091f1204fde9c3cd985175b16f40b4142f915fe5
 
 LABEL org.opencontainers.image.title="HelmsKB" \
-      org.opencontainers.image.version="0.8.3-helmskb.4" \
+      org.opencontainers.image.version="0.8.3-helmskb.5" \
       org.opencontainers.image.base.name="wechatopenai/weknora-ui:v0.8.3" \
       org.opencontainers.image.source="https://github.com/raylu798-art/HelmsKB" \
       org.opencontainers.image.description="HelmsKB frontend based on WeKnora v0.8.3"
 
 RUN find /usr/share/nginx/html -mindepth 1 -delete
 COPY frontend/dist/ /usr/share/nginx/html/
+RUN test -f /usr/share/nginx/html/docs/index.html
+COPY frontend/nginx.conf /etc/nginx/templates/default.conf.template
 COPY LICENSE THIRD_PARTY_NOTICES.md /usr/share/helmskb/
 COPY licenses/ /usr/share/helmskb/licenses/

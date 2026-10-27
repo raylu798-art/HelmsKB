@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, h, ref, watch, onMounted, onUnmounted } from 'vue'
-import { useData, useRoute } from 'vitepress'
+import { useData, useRoute, withBase } from 'vitepress'
 import Search from 'vitepress/dist/client/theme-default/components/VPNavBarSearch.vue'
-import { repositoryUrl, headerIcons, homeAssets } from '../../shared/header'
+import { repositoryUrl, headerIcons } from '../../shared/header'
 const { isDark } = useData()
+const brandLogo = computed(() => withBase(isDark.value ? '/brand/helmskb-logo-reversed.svg' : '/brand/helmskb-logo.svg'))
 const route = useRoute()
 const docsNavigation = [
   { label: '快速开始', href: '/docs/01-getting-started/03-quickstart', section: '/docs/01-getting-started/' },
@@ -29,7 +30,7 @@ onUnmounted(() => document.removeEventListener('keydown', closeMenu))
 <template>
   <header class="wk-header wk-docs-header">
     <div class="wk-header-inner">
-      <a class="wk-brand" href="/" target="_self" aria-label="WeKnora 首页"><span class="wk-logo"><img :src="`${homeAssets}/brand/weknora-original.png`" alt="WeKnora" width="945" height="650"></span></a>
+      <a class="wk-brand" href="/" target="_self" aria-label="HelmsKB 首页"><img class="helmskb-docs-logo" :src="brandLogo" alt="HelmsKB" width="180" height="53"></a>
       <nav id="main-navigation" class="wk-navigation" :class="{ 'is-open': open }" aria-label="文档导航">
         <a v-for="item in docsNavigation" :key="item.href" :href="item.href" :aria-current="route.path.startsWith(item.section) ? 'page' : undefined" @click="open = false">{{ item.label }}</a>
         <div class="wk-header-search"><Search /></div>
@@ -41,3 +42,8 @@ onUnmounted(() => document.removeEventListener('keydown', closeMenu))
     </div>
   </header>
 </template>
+
+<style scoped>
+.helmskb-docs-logo { display: block; width: 180px; height: auto; }
+@media (max-width: 640px) { .helmskb-docs-logo { width: 136px; } }
+</style>

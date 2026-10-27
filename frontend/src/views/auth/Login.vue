@@ -102,8 +102,8 @@
 
     <!-- Header Links - Top Right -->
     <div class="header-links">
-      <a href="https://weknora.weixin.qq.com/docs/" target="_blank" rel="noopener noreferrer"
-        class="header-link" :title="$t('common.documentation') + ' · WeKnora'">
+      <a :href="docsUrl('home')" target="_blank" rel="noopener noreferrer"
+        class="header-link" :title="$t('common.documentation') + ' · HelmsKB'">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
           stroke-linecap="round">
           <circle cx="12" cy="12" r="10" />
@@ -366,6 +366,7 @@ import {
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import BrandLogo from '@/components/BrandLogo.vue'
+import { docsUrl } from '@/utils/docsUrl'
 
 // Import screenshot images
 import screenshot1 from '@/assets/img/screenshot-1.svg'

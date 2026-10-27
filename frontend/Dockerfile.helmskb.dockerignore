@@ -3,6 +3,7 @@
 !frontend/dist/
 !frontend/dist/**
 !frontend/Dockerfile.helmskb
+!frontend/nginx.conf
 !LICENSE
 !THIRD_PARTY_NOTICES.md
 !licenses/

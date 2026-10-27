@@ -1,5 +1,5 @@
-/** Public deployment of website-docs (VitePress, base `/docs/`). */
-export const DOCS_BASE_URL = 'https://weknora.weixin.qq.com/docs/'
+/** Repository-owned documentation bundled with the frontend on the same origin. */
+export const DOCS_BASE_URL = '/docs/'
 
 /**
  * Doc pages linked from the UI, as website-docs paths without the `.md`

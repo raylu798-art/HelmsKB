@@ -1,22 +1,29 @@
 ---
-layout: page
-title: 快速上手
-sidebar: false
-aside: false
-footer: false
-search: false
-head:
-  - - meta
-    - http-equiv: refresh
-      content: '0;url=/docs/01-getting-started/03-quickstart.html'
-  - - link
-    - rel: canonical
-      href: /docs/01-getting-started/03-quickstart.html
+title: HelmsKB 使用文档
 ---
 
-<script setup>
-import { onMounted } from 'vue'
-onMounted(() => window.location.replace('/docs/01-getting-started/03-quickstart.html' + window.location.search + window.location.hash))
-</script>
+# HelmsKB 使用文档
 
-[进入快速上手](/01-getting-started/03-quickstart)
+这套文档随 HelmsKB 安装包一起交付。目录、正文、图片与搜索均由当前服务提供，阅读文档无需连接在线文档站点。
+
+## 开始使用
+
+1. 在登录页创建账户，并登录工作空间。
+2. 由管理员[配置模型](/03-features/06-models)，确认对话、Embedding 和需要的重排模型可用。
+3. [创建知识库并导入资料](/03-features/02-knowledge-base)，检查文档解析与索引状态。
+4. 在知识库中提问，核对回答和原文引用；按实际资料调整检索和分块配置。
+
+## 常用手册
+
+- [快速上手](/01-getting-started/03-quickstart)：界面、知识库和首次问答。
+- [工作空间与权限](/03-features/01-tenant-auth)：用户、角色和资源访问。
+- [模型配置](/03-features/06-models)：模型服务、协议及连接检查。
+- [API 参考](/04-api/01-api-overview)：接入业务系统。
+- [故障排查](/01-getting-started/05-troubleshooting)：部署、解析、检索和数据库迁移。
+- [开发指南](/06-development/01-dev-guide)：开发环境及基础服务。
+
+左侧目录包含完整功能与技术参考；顶部搜索在本地索引中查找内容。
+
+## 版本与来源
+
+HelmsKB 基于 WeKnora v0.8.3 持续开发。本地技术参考保留上游实际使用的 API、CLI、配置标识与版权说明。模型服务和第三方集成的配置应以当前部署版本为准。

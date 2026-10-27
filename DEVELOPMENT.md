@@ -18,8 +18,10 @@
 ```bash
 cd frontend
 npm ci --no-audit --no-fund
+npm --prefix ../website-docs ci --no-audit --no-fund
 npm run check-i18n
-npm run build
+npm run check:docs-links
+npm run build:with-docs
 ```
 
 内存较紧时，构建前设置 `NODE_OPTIONS=--max-old-space-size=3072`。前端构建无需模型凭据，也不能证明检索问答可用。修改 Go、解析器或迁移时，需要补充对应模块测试和集成验证。
@@ -28,10 +30,12 @@ npm run build
 
 ## 镜像
 
-`frontend/Dockerfile.helmskb` 将已构建的 `frontend/dist/` 打包到固定的上游 UI 运行基底，并携带许可材料。在仓库根目录可构建开发镜像：
+文档源码在 `website-docs/`，使用已有 VitePress 目录、锚点和本地搜索。`build:with-docs` 先构建文档到被 Git 忽略的 `frontend/public/docs/`，再构建应用；Vite 会将文档一并复制到 `frontend/dist/docs/`。`npm run build` 保留纯应用构建兼容性；HelmsKB 交付使用联合构建。首次运行开发服务器前，也可执行 `npm --prefix ../website-docs run build:embedded` 生成本地文档。
+
+`frontend/Dockerfile.helmskb` 将已联合构建的 `frontend/dist/` 打包到固定的上游 UI 运行基底，并携带许可材料和支持文档 clean URL 的 Nginx 配置。镜像打包会检查文档入口存在。在仓库根目录可构建开发镜像：
 
 ```bash
-docker build --pull=false -f frontend/Dockerfile.helmskb -t p006-helmskb-local-ui:0.8.3-brand.4 .
+docker build --pull=false -f frontend/Dockerfile.helmskb -t p006-helmskb-local-ui:0.8.3-brand.5 .
 ```
 
 此命令只构建前端，不是完整平台部署。发布时使用独立注册表和不可变摘要，并记录源码提交和构建依据。

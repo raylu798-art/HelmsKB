@@ -28,11 +28,13 @@ HelmsKB 是面向企业私有化知识应用、基于 [Tencent/WeKnora](https://
 ```bash
 cd frontend
 npm ci --no-audit --no-fund
+npm --prefix ../website-docs ci --no-audit --no-fund
 npm run check-i18n
-npm run build
+npm run check:docs-links
+npm run build:with-docs
 ```
 
-大型前端构建可设置 `NODE_OPTIONS=--max-old-space-size=3072`。后端 Go 版本以 `go.mod` 为准，DocReader 的 Python 依赖以其项目文件和锁文件为准。
+大型前端构建可设置 `NODE_OPTIONS=--max-old-space-size=3072`。联合构建会将仓库 `website-docs/` 中的完整文档、图片和本地搜索一起打包到前端，部署后从本站 `/docs/` 阅读，无需在线文档站点。后端 Go 版本以 `go.mod` 为准，DocReader 的 Python 依赖以其项目文件和锁文件为准。
 
 独立启动前，先规划本项目的模型、解析器、数据库、存储和端口；不要直接复用其他项目的运行配置。详见 [开发说明](DEVELOPMENT.md)。
 

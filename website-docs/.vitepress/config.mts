@@ -80,13 +80,13 @@ function tokenize(text: string): string[] {
   return tokens
 }
 
-const repo = 'https://github.com/Tencent/WeKnora'
+const repo = 'https://github.com/raylu798-art/HelmsKB'
 
 export default withMermaid(
   defineConfig({
-    title: 'WeKnora',
-    titleTemplate: ':title · WeKnora 文档',
-    description: 'WeKnora（维娜拉）官方文档：部署、配置、功能说明、API 参考与二次开发',
+    title: 'HelmsKB',
+    titleTemplate: ':title · HelmsKB 文档',
+    description: '随 HelmsKB 一同交付的本地文档：使用、配置、API 与 WeKnora v0.8.3 基础技术参考',
     lang: 'zh-CN',
     base: '/docs/',
     cleanUrls: true,
@@ -103,7 +103,7 @@ export default withMermaid(
       ['link', { rel: 'icon', href: '/docs/favicon.ico', type: 'image/x-icon' }],
       ['meta', { name: 'theme-color', content: '#101f38' }],
       ['meta', { property: 'og:type', content: 'website' }],
-      ['meta', { property: 'og:title', content: 'WeKnora 文档' }],
+      ['meta', { property: 'og:title', content: 'HelmsKB 文档' }],
       [
         'meta',
         {
@@ -128,7 +128,7 @@ export default withMermaid(
 
     themeConfig: {
       logoLink: { link: '/', target: '_self' },
-      siteTitle: 'WeKnora',
+      siteTitle: 'HelmsKB',
 
       nav: [],
 
@@ -186,8 +186,8 @@ export default withMermaid(
       },
 
       footer: {
-        message: `基于 WeKnora ${repoVersionLabel} 源码整理 · MIT License`,
-        copyright: '© Tencent WeKnora',
+        message: `HelmsKB 本地文档 · 基于 WeKnora ${repoVersionLabel} 技术文档整理 · MIT License`,
+        copyright: '上游文档版权 © Tencent WeKnora；HelmsKB 定制与维护',
       },
     },
 

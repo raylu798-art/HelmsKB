@@ -17,6 +17,7 @@ Thumbs.db
 /backups/
 **/dist/
 coverage/
+/frontend/public/docs/
 
 # 敏感文件
 *.pem
