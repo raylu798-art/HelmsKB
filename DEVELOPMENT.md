@@ -35,7 +35,7 @@ npm run build:with-docs
 `frontend/Dockerfile.helmskb` 将已联合构建的 `frontend/dist/` 打包到固定的上游 UI 运行基底，并携带许可材料和支持文档 clean URL 的 Nginx 配置。镜像打包会检查文档入口存在。在仓库根目录可构建开发镜像：
 
 ```bash
-docker build --pull=false -f frontend/Dockerfile.helmskb -t p006-helmskb-local-ui:0.8.3-brand.5 .
+docker build --pull=false -f frontend/Dockerfile.helmskb -t p006-helmskb-local-ui:0.8.3-brand.6 .
 ```
 
 此命令只构建前端，不是完整平台部署。发布时使用独立注册表和不可变摘要，并记录源码提交和构建依据。

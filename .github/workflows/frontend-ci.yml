@@ -44,6 +44,8 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm ci --no-audit --no-fund
         working-directory: website-docs
+      - run: npm run check:docs
+        working-directory: website-docs
       - run: npm run check-i18n
       - run: npm run check:docs-links
       - run: npm run build:with-docs

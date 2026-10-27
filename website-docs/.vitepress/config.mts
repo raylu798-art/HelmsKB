@@ -35,6 +35,7 @@ function itemText(dir: string, file: string): string {
   const raw = readFileSync(resolve(root, dir, file), 'utf-8')
   const heading = raw.match(/^#\s+(.+)$/m)?.[1] ?? file.replace(/\.md$/, '')
   return heading
+    .replace(/\s*\{#[^}]+\}\s*$/, '')
     .replace(/^API 参考[:：]\s*/, '')
     .replace(/\s*[（(][^（()）]*[)）]\s*/g, ' ')
     .replace(/\s{2,}/g, ' ')
@@ -86,12 +87,12 @@ export default withMermaid(
   defineConfig({
     title: 'HelmsKB',
     titleTemplate: ':title · HelmsKB 文档',
-    description: '随 HelmsKB 一同交付的本地文档：使用、配置、API 与 WeKnora v0.8.3 基础技术参考',
+    description: '随 HelmsKB 一同交付的本地文档：使用、配置、API 与 v0.8.3 基础技术参考',
     lang: 'zh-CN',
     base: '/docs/',
     cleanUrls: true,
     appearance: { storageKey: 'vitepress-theme-appearance' },
-    lastUpdated: true,
+    lastUpdated: false,
     srcExclude: ['README.md', 'MIGRATION.md', 'homepage/**', 'shared/**', 'scripts/**', 'deploy/**', 'static-site/**', 'releases/**'],
     metaChunk: true,
     transformPageData(pageData) {
@@ -186,7 +187,7 @@ export default withMermaid(
       },
 
       footer: {
-        message: `HelmsKB 本地文档 · 基于 WeKnora ${repoVersionLabel} 技术文档整理 · MIT License`,
+        message: `HelmsKB 本地文档 · 基础版本 ${repoVersionLabel} · MIT License`,
         copyright: '上游文档版权 © Tencent WeKnora；HelmsKB 定制与维护',
       },
     },
