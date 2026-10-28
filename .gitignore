@@ -63,3 +63,9 @@ miniprogram/project.private.config.json
 
 # Locally built BrowserSkill runtime and extension bundles
 /artifacts/browserskill/
+
+# HelmsKB generated build stages and reports
+/.helmskb/
+/frontend/public/docs/
+/helmskb/build/node_modules/
+/helmskb/build/*.log

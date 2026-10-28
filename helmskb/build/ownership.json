@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "ownedPrefixes": ["helmskb/", ".github/upstream-workflows/"],
+  "ownedFiles": ["AGENTS.md", "README.md", "UPSTREAM.md", "DEVELOPMENT.md", ".gitignore", ".github/workflows/helmskb-ci.yml", ".github/workflows/helmskb-sync.yml"],
+  "removedUpstreamPrefix": ".github/workflows/",
+  "stagedBridgeFiles": [
+    "frontend/src/i18n/index.ts", "frontend/src/views/auth/Login.vue", "frontend/src/components/menu.vue",
+    "frontend/src/components/UserMenu.vue", "frontend/src/views/settings/SystemInfo.vue",
+    "frontend/src/utils/docsUrl.ts", "frontend/index.html", "frontend/embed.html", "frontend/vite.config.ts",
+    "frontend/nginx.conf", "frontend/package.json", "frontend/package-lock.json",
+    "website-docs/.vitepress/config.mts", "website-docs/.vitepress/theme/SiteHeader.vue", "website-docs/shared/header.ts",
+    "internal/productdocs/markdown.go", "internal/productdocs/library.go", "internal/agent/tools/operations.go", "internal/agent/tools/product_docs.go",
+    "config/builtin_agents.yaml", "config/prompt_templates/agent_system_prompt.yaml"
+  ],
+  "stagedGeneratedPrefixes": ["frontend/public/brand/", "website-docs/public/brand/"],
+  "stagedGeneratedFiles": ["frontend/public/favicon.ico", "website-docs/public/favicon.ico", "frontend/public/helmskb-build.json"],
+  "stagedMarkdownPrefix": "website-docs/"
+}

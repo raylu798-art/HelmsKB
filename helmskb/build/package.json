@@ -1,0 +1,14 @@
+{
+  "name": "helmskb-build",
+  "version": "0.1.0-rc.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test *.test.mjs",
+    "prepare:source": "node prepare.mjs",
+    "check:boundary": "node boundary.mjs",
+    "sync:upstream": "node sync-upstream.mjs"
+  },
+  "dependencies": {"@mdit-vue/shared": "3.0.2", "markdown-it": "15.0.3", "yaml": "2.9.1"},
+  "engines": {"node": ">=24"}
+}

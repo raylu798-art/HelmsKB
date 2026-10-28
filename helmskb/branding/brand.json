@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "profileVersion": "1",
+  "name": "HelmsKB",
+  "wordmark": {"primary": "Helms", "accent": "KB"},
+  "tagline": "Enterprise Knowledge Base",
+  "colors": {"text": "#0F172A", "accent": "#2563EB"},
+  "repository": "https://github.com/raylu798-art/HelmsKB",
+  "docsBase": "/docs/",
+  "protectedNames": ["WeKnora Cloud", "WeKnoraCloud", "WeKnora CLI", "WeKnora Skill"],
+  "sourceNotice": "HelmsKB 基于腾讯开源项目 WeKnora；本技术参考随对应源码版本交付。"
+}
