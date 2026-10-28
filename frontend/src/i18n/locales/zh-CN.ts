@@ -1499,6 +1499,8 @@ export default {
       thinkingDesc: '动态和反思性的问题解决思考工具',
       todoWrite: '制定计划',
       todoWriteDesc: '创建结构化的研究计划',
+      askUser: '向用户提问',
+      askUserDesc: '在缺少关键信息时向用户提问，并等待回答后继续',
       searchKnowledge: '检索知识库',
       searchKnowledgeDesc: '语义、关键词或混合检索知识库分块',
       readDocument: '阅读文档',
@@ -1811,6 +1813,7 @@ export default {
       readDocument: '阅读文档',
       listDocuments: '浏览文档列表',
       todoWrite: '计划管理',
+      askUser: '向用户提问',
       knowledgeGraphExtract: '知识图谱抽取',
       thinking: '思考',
       attachmentParsing: '解析附件',
@@ -1873,6 +1876,7 @@ export default {
       waiting: '等待授权 · {target}',
       waitingStatus: '等待授权',
       targetWithTool: '{service} › {tool}',
+      dockQuestion: '需要授权 {target} 才能继续',
       titleWithService: 'OAuth 授权 · {service}',
       titleWithTool: 'OAuth 授权 · {service} › {tool}',
       desc: '点击授权将打开新窗口完成登录，授权成功后会自动继续本次工具调用。',
@@ -1887,10 +1891,37 @@ export default {
       resumeFailed: '恢复执行失败，请重试',
       skipFailed: '跳过失败，请重试'
     },
+    askUser: {
+      title: '向你提问',
+      selectPlaceholder: '请选择',
+      textPlaceholder: '输入你的回答',
+      otherPlaceholder: '其他（可选）',
+      decline: '不回答',
+      submit: '提交',
+      declinedTag: '已拒绝回答',
+      submitted: '已提交',
+      answeredTag: '已回答',
+      timedOutTag: '超时未回答',
+      canceledTag: '已取消',
+      unansweredTag: '未回答',
+      submitFailed: '提交失败',
+    },
+    promptDock: {
+      approvalTitle: '需要你审核',
+      oauthTitle: '需要你授权',
+      waiting: '等待你处理',
+      handle: '去处理',
+      pager: '{current} / {total}',
+      previous: '上一个',
+      next: '下一个',
+      collapse: '收起',
+      expand: '展开'
+    },
     toolApproval: {
       waiting: '等待审核 · {target}',
       waitingStatus: '等待审核',
       targetWithTool: '{service} › {tool}',
+      dockQuestion: '允许调用 {target}？',
       titleWithTarget: '人工审核 · {service} › {tool}',
       argsLabel: '调用参数',
       argsModified: '已修改',
@@ -1899,6 +1930,9 @@ export default {
       reject: '拒绝',
       approvedTag: '已通过',
       rejectedTag: '已拒绝',
+      parked: '已转入后台等待，可稍后处理',
+      parkedUntil: '已转入后台等待，{time} 前可处理',
+      abandonedTag: '已放弃',
       invalidJson: '参数不是合法 JSON',
       submitted: '已提交',
       submitFailed: '提交失败',
@@ -2013,7 +2047,86 @@ export default {
     getDocumentInfo: '获取文档信息',
     queryKnowledgeGraph: '查询知识图谱',
     think: '深度思考',
-    todoWrite: '制定计划'
+    todoWrite: '制定计划',
+    askUser: '向用户提问'
+  },
+  assistant: {
+    title: 'HelmsKB 助手',
+    newConversation: '新对话',
+    resize: '调整助手宽度',
+    layout: {
+      dock: '固定在右侧',
+      float: '改为悬浮',
+    },
+    welcomeTitle: '有什么可以帮你？',
+    welcomeDesc: '我可以解答 HelmsKB 的用法，也可以查看和处理你空间里的文档解析、知识库动态和 Wiki 问题。改动前是否先请你确认，由输入框下方的权限等级决定。',
+    startFailed: '启动助手失败，请重试',
+    askAboutDocument: '问 {name}',
+    access: {
+      title: '权限等级',
+      capped: '空间管理员未开放这一等级',
+      levels: {
+        read_only: {
+          label: '只读',
+          desc: '只查看，不做任何修改'
+        },
+        confirm: {
+          label: '修改前确认',
+          desc: '每次修改或删除前都先请你确认'
+        },
+        auto_write: {
+          label: '自动执行',
+          desc: '可恢复的修改直接执行，删除仍需确认'
+        }
+      }
+    },
+    context: {
+      currentPage: '当前页面',
+      detach: '不附带当前页面',
+      attachedTip: '已附带当前页面：{path}',
+      detachedTip: '点击附带当前页面：{path}'
+    },
+    starters: {
+      wikiIssues: '这个页面有哪些待处理的问题？',
+      wikiSummary: '总结一下这个 Wiki 页面',
+      documentStatus: '这个文档的解析状态怎么样？',
+      documentSummary: '总结一下这个文档',
+      failedDocuments: '这个知识库有哪些解析失败的文档？',
+      recentActivity: '这个知识库最近有哪些变动？',
+      formats: 'HelmsKB 支持哪些文档格式？',
+      createWiki: '怎样创建 Wiki 知识库？'
+    }
+  },
+  assistantSettings: {
+    title: '助手',
+    description: '设置 {name} 的入口、打开方式和权限等级。',
+    introTitle: '助手只能做你本人有权限做的事',
+    introDescription: '助手以你的身份操作，能看到和修改的范围与你在空间里的角色一致。权限等级只会在此基础上进一步收紧，不会放宽。',
+    personalGroup: '个人偏好',
+    accessLabel: '权限等级',
+    accessDescription: '决定助手修改内容前是否先请你确认。也可以在助手输入框下方随时切换。',
+    accessCeilingHint: '空间管理员将最高等级设为「{level}」。',
+    entryLabel: '入口位置',
+    entryDescription: '无论选哪种，都可以在命令面板（{shortcut}）中打开助手。',
+    entries: {
+      sidebar: '侧边栏',
+      launcher: '页面右侧',
+      palette: '仅命令面板'
+    },
+    layoutLabel: '打开方式',
+    layoutDescription: '固定在右侧时会挤压页面内容，悬浮时盖在页面上方。窗口较窄时总是悬浮。',
+    layouts: {
+      docked: '固定在右侧',
+      floating: '悬浮'
+    },
+    workspaceGroup: '空间设置',
+    adminOnly: '仅管理员可修改',
+    nameLabel: '助手名称',
+    nameDescription: '空间内所有成员看到的名称，留空使用默认名称。',
+    ceilingLabel: '最高权限等级',
+    ceilingDescription: '成员能选择的最高等级。设为「只读」后，助手在这个空间里不会做任何修改。',
+    saved: '已保存',
+    saveFailed: '保存失败：{message}'
   },
   commandPalette: {
     placeholder: '搜索知识库、文件、对话…',
@@ -2038,7 +2151,8 @@ export default {
       agents: '打开智能体',
       organizations: '打开共享空间',
       settings: '打开设置',
-      productTour: '新手引导'
+      productTour: '新手引导',
+      assistant: '打开 {name}'
     },
     match: {
       vector: '向量',
@@ -4729,12 +4843,10 @@ export default {
       globalIssuesEmpty: '暂无待处理的内容问题',
       issuePagePrefix: '页面: ',
       issueGoFix: '去处理',
-      fixAssistantTitle: 'Wiki 智能修复助手',
       issueFixSuggestions: '内容优化建议 ({count})',
       issueFixSingle: '修复',
-      fixStartError: '启动修复助手失败',
-      issueFixPromptSingle: '请修复页面 [[{slug}]] 上的问题 (ID: {id})。',
-      issueFixPromptAutoStart: '请修复页面 [[{slug}]] 上的以下问题：'
+      issueFixPromptSingle: '修复这个 Wiki 问题：{description}',
+      issueFixPromptAll: '修复当前页面的 {count} 个待处理问题'
     },
     indexing: {
       title: '索引策略',
@@ -4844,6 +4956,7 @@ export default {
       systemActor: '系统触发',
       actorWithAPIKey: '{actor} · API Key · {name}',
       actorAPIKey: 'API Key · {name}',
+      viaAssistant: '经 HelmsKB 助手',
       knowledgeBase: '知识库',
       countItems: '共 {count} 项',
       titleWithCount: '{title} 等 {count} 项',
@@ -4949,6 +5062,8 @@ export default {
         actorId: '发起人 ID',
         apiKeyName: 'API Key 名称',
         apiKeyId: 'API Key ID',
+        agentSessionId: '助手会话 ID',
+        agentOperation: '助手操作',
         details: '详情'
       },
       columns: {
@@ -5186,6 +5301,9 @@ export default {
     notConfigured: '未配置',
     sharedAgentModelLabel: '共享智能体配置的模型',
     noModel: '暂无可用模型',
+    modelAuto: '默认',
+    modelFollowDefault: '跟随默认',
+    modelAutoHint: '当前知识库配置的对话模型；不在知识库页面或知识库未配置时，使用第一个可用的对话模型',
     stopGeneration: '停止生成',
     send: '发送',
     steerCurrent: '补充当前任务',

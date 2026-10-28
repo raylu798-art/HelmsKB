@@ -39,6 +39,10 @@ git remote add upstream https://github.com/Tencent/WeKnora.git
 
 上游升级应指定标签或提交，在单独分支比较源码和迁移差异，逐项迁入并运行回归。由于采用快照导入，不应对上游主分支直接执行无审阅的 `pull` 或合并；每次升级应更新本文件的基线、来源及验证记录。
 
+## 助手单项移植
+
+在 v0.8.3 基线上按依赖顺序迁入至 `450b6ed1b781c36983c53d9d564ffe65a863b3e8` 的独立助手功能，包含必要的持久化操作确认及数据库迁移。未整体合并上游 main；提交清单、适配与验证方法见 [助手移植记录](docs/engineering/assistant-backport.md)。
+
 ## 版权与第三方
 
 保留 `LICENSE`、`THIRD_PARTY_NOTICES.md`、`licenses/` 和适用的文件内声明。WeKnora 的 MIT 条款不替代 MPL-2.0、Apache-2.0 等第三方组件的要求；现有对应源码打包脚本继续保留。品牌名称和定制不改变代码的历史来源。

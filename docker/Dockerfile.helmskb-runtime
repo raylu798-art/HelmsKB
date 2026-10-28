@@ -1,0 +1,22 @@
+# Package an audited full server build (with the anydoc tag) on the pinned
+# v0.8.3 runtime, retaining native parsers, BrowserSkill and license sources.
+# See docs/engineering/assistant-backport.md for the source and validation scope.
+FROM dockerproxy.net/wechatopenai/weknora-app:v0.8.3@sha256:b5f96b13c2f69779af8c7291264cafbda64c208398b019e3a6223c6f3ea82031
+
+ARG SOURCE_COMMIT
+ARG SERVER_SHA256
+LABEL org.opencontainers.image.title="HelmsKB" \
+      org.opencontainers.image.version="0.8.3-helmskb-assistant.1" \
+      org.opencontainers.image.revision="${SOURCE_COMMIT}" \
+      org.opencontainers.image.source="https://github.com/raylu798-art/HelmsKB" \
+      org.opencontainers.image.base.name="wechatopenai/weknora-app:v0.8.3" \
+      org.opencontainers.image.description="WeKnora v0.8.3 with the HelmsKB assistant backport"
+
+COPY build/helmskb/WeKnora /app/WeKnora
+RUN test -n "$SOURCE_COMMIT" && test -n "$SERVER_SHA256" \
+    && echo "$SERVER_SHA256  /app/WeKnora" | sha256sum -c - \
+    && chmod 755 /app/WeKnora && chown appuser:appuser /app/WeKnora
+COPY config/builtin_agents.yaml /app/config/builtin_agents.yaml
+COPY config/prompt_templates/agent_system_prompt.yaml /app/config/prompt_templates/agent_system_prompt.yaml
+COPY migrations/ /app/migrations/
+COPY LICENSE THIRD_PARTY_NOTICES.md /app/

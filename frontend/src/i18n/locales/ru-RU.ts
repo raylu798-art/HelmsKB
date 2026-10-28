@@ -1497,6 +1497,8 @@ export default {
       thinkingDesc: 'Динамический инструмент рефлексивного решения проблем',
       todoWrite: 'Планирование',
       todoWriteDesc: 'Создание структурированных исследовательских планов',
+      askUser: 'Вопрос пользователю',
+      askUserDesc: 'Задаёт пользователю вопрос, когда не хватает данных, и ждёт ответа',
       searchKnowledge: 'Поиск по базе знаний',
       searchKnowledgeDesc: 'Семантический, ключевой или гибридный поиск по фрагментам базы знаний',
       readDocument: 'Чтение документа',
@@ -1809,6 +1811,7 @@ export default {
       readDocument: 'Чтение документа',
       listDocuments: 'Список документов',
       todoWrite: 'Управление планами',
+      askUser: 'Вопрос пользователю',
       knowledgeGraphExtract: 'Извлечение графа знаний',
       thinking: 'Размышление',
       attachmentParsing: 'Разбор вложения',
@@ -1871,6 +1874,7 @@ export default {
       waiting: 'Ожидание авторизации · {target}',
       waitingStatus: 'Ожидание авторизации',
       targetWithTool: '{service} › {tool}',
+      dockQuestion: 'Авторизуйте {target}, чтобы продолжить',
       titleWithService: 'OAuth · {service}',
       titleWithTool: 'OAuth · {service} › {tool}',
       desc: 'Авторизация откроет новое окно для входа. После успешной авторизации вызов инструмента продолжится автоматически.',
@@ -1885,10 +1889,37 @@ export default {
       resumeFailed: 'Не удалось возобновить выполнение, повторите попытку',
       skipFailed: 'Не удалось пропустить, повторите попытку'
     },
+    askUser: {
+      title: 'Вопрос к вам',
+      selectPlaceholder: 'Выберите',
+      textPlaceholder: 'Введите ответ',
+      otherPlaceholder: 'Другое (необязательно)',
+      decline: 'Не отвечать',
+      submit: 'Отправить',
+      declinedTag: 'Отказ от ответа',
+      submitted: 'Отправлено',
+      answeredTag: 'Ответ дан',
+      timedOutTag: 'Нет ответа вовремя',
+      canceledTag: 'Отменено',
+      unansweredTag: 'Без ответа',
+      submitFailed: 'Не удалось отправить',
+    },
+    promptDock: {
+      approvalTitle: 'Требуется ваша проверка',
+      oauthTitle: 'Требуется авторизация',
+      waiting: 'Ожидает вашего ответа',
+      handle: 'Ответить',
+      pager: '{current} / {total}',
+      previous: 'Назад',
+      next: 'Далее',
+      collapse: 'Свернуть',
+      expand: 'Развернуть'
+    },
     toolApproval: {
       waiting: 'Ожидание проверки · {target}',
       waitingStatus: 'Ожидание проверки',
       targetWithTool: '{service} › {tool}',
+      dockQuestion: 'Разрешить вызов {target}?',
       titleWithTarget: 'Проверка · {service} › {tool}',
       argsLabel: 'Аргументы',
       argsModified: 'Изменено',
@@ -1897,6 +1928,9 @@ export default {
       reject: 'Отклонить',
       approvedTag: 'Подтверждено',
       rejectedTag: 'Отклонено',
+      parked: 'Ожидает в фоне — можно ответить позже',
+      parkedUntil: 'Ожидает в фоне — ответьте до {time}',
+      abandonedTag: 'Отменено',
       invalidJson: 'Некорректный JSON',
       submitted: 'Отправлено',
       submitFailed: 'Ошибка отправки',
@@ -2011,7 +2045,86 @@ export default {
     getDocumentInfo: 'Получить информацию о документе',
     queryKnowledgeGraph: 'Запрос к графу знаний',
     think: 'Глубокое размышление',
-    todoWrite: 'Составить план'
+    todoWrite: 'Составить план',
+    askUser: 'Вопрос пользователю'
+  },
+  assistant: {
+    title: 'Ассистент HelmsKB',
+    newConversation: 'Новый диалог',
+    resize: 'Изменить ширину ассистента',
+    layout: {
+      dock: 'Закрепить справа',
+      float: 'Сделать плавающим',
+    },
+    welcomeTitle: 'Чем помочь?',
+    welcomeDesc: 'Я отвечаю на вопросы о HelmsKB, а также проверяю и обрабатываю разбор документов, активность баз знаний и проблемы Wiki в вашем пространстве. Спрашивать ли подтверждение перед изменением, зависит от уровня доступа под полем ввода.',
+    startFailed: 'Не удалось запустить ассистента. Попробуйте ещё раз.',
+    askAboutDocument: 'Спросить: {name}',
+    access: {
+      title: 'Уровень доступа',
+      capped: 'Не разрешено администратором пространства',
+      levels: {
+        read_only: {
+          label: 'Только чтение',
+          desc: 'Только смотрит, ничего не меняет'
+        },
+        confirm: {
+          label: 'С подтверждением',
+          desc: 'Спрашивает перед каждым изменением или удалением'
+        },
+        auto_write: {
+          label: 'Автоматически',
+          desc: 'Обратимые изменения вносит сразу, перед удалением всё равно спрашивает'
+        }
+      }
+    },
+    context: {
+      currentPage: 'Текущая страница',
+      detach: 'Не прикладывать текущую страницу',
+      attachedTip: 'Приложена текущая страница: {path}',
+      detachedTip: 'Нажмите, чтобы приложить текущую страницу: {path}'
+    },
+    starters: {
+      wikiIssues: 'Какие открытые проблемы есть на этой странице?',
+      wikiSummary: 'Кратко изложи эту страницу Wiki',
+      documentStatus: 'Как прошёл разбор этого документа?',
+      documentSummary: 'Кратко изложи этот документ',
+      failedDocuments: 'Какие документы этой базы знаний не удалось разобрать?',
+      recentActivity: 'Что недавно менялось в этой базе знаний?',
+      formats: 'Какие форматы документов поддерживает HelmsKB?',
+      createWiki: 'Как создать базу знаний Wiki?'
+    }
+  },
+  assistantSettings: {
+    title: 'Ассистент',
+    description: 'Где открывать {name}, как и насколько свободно он может действовать.',
+    introTitle: 'Ассистент может только то, что можете вы',
+    introDescription: 'Он действует от вашего имени, поэтому видит и меняет ровно то, что позволяет ваша роль в пространстве. Уровень доступа может лишь сузить это, но не расширить.',
+    personalGroup: 'Ваши настройки',
+    accessLabel: 'Уровень доступа',
+    accessDescription: 'Спрашивает ли ассистент перед тем, как что-то изменить. Переключить можно и под полем ввода ассистента.',
+    accessCeilingHint: 'Администратор пространства ограничил уровень значением «{level}».',
+    entryLabel: 'Точка входа',
+    entryDescription: 'При любом выборе ассистента можно открыть из палитры команд ({shortcut}).',
+    entries: {
+      sidebar: 'Боковая панель',
+      launcher: 'Край страницы',
+      palette: 'Только палитра команд'
+    },
+    layoutLabel: 'Вид',
+    layoutDescription: 'Закреплённая панель сужает страницу рядом, плавающая — накрывает её. В узком окне панель всегда плавающая.',
+    layouts: {
+      docked: 'Закреплённая',
+      floating: 'Плавающая'
+    },
+    workspaceGroup: 'Пространство',
+    adminOnly: 'Только для администраторов',
+    nameLabel: 'Имя ассистента',
+    nameDescription: 'Имя, которое видят все участники. Оставьте пустым для имени по умолчанию.',
+    ceilingLabel: 'Максимальный уровень доступа',
+    ceilingDescription: 'Наивысший уровень, который могут выбрать участники. При «Только чтение» ассистент ничего не меняет в этом пространстве.',
+    saved: 'Сохранено',
+    saveFailed: 'Не удалось сохранить: {message}'
   },
   commandPalette: {
     placeholder: 'Поиск по базам знаний, файлам, диалогам…',
@@ -2036,7 +2149,8 @@ export default {
       agents: 'Открыть агенты',
       organizations: 'Открыть общие пространства',
       settings: 'Открыть настройки',
-      productTour: 'Обучение'
+      productTour: 'Обучение',
+      assistant: 'Открыть: {name}'
     },
     match: {
       vector: 'Вектор',
@@ -4727,12 +4841,10 @@ export default {
       globalIssuesEmpty: 'Нет ожидающих проблем содержимого',
       issuePagePrefix: 'Страница: ',
       issueGoFix: 'Исправить',
-      fixAssistantTitle: 'Wiki Умный помощник исправления',
       issueFixSuggestions: 'Предложения по оптимизации ({count})',
       issueFixSingle: 'Исправить',
-      fixStartError: 'Не удалось запустить помощник исправления',
-      issueFixPromptSingle: 'Пожалуйста, исправьте проблему (ID: {id}) на странице [[{slug}]].',
-      issueFixPromptAutoStart: 'Пожалуйста, исправьте следующие проблемы на странице [[{slug}]]:'
+      issueFixPromptSingle: 'Исправь эту проблему Wiki: {description}',
+      issueFixPromptAll: 'Исправь {count} открытых проблем на этой странице'
     },
     indexing: {
       title: 'Стратегия индексации',
@@ -4842,6 +4954,7 @@ export default {
       systemActor: 'Система',
       actorWithAPIKey: '{actor} · API Key · {name}',
       actorAPIKey: 'API Key · {name}',
+      viaAssistant: 'Через ассистента HelmsKB',
       knowledgeBase: 'База знаний',
       countItems: '{count} элем.',
       titleWithCount: '{title} и ещё {count}',
@@ -4947,6 +5060,8 @@ export default {
         actorId: 'ID инициатора',
         apiKeyName: 'Имя API-ключа',
         apiKeyId: 'ID API-ключа',
+        agentSessionId: 'ID диалога ассистента',
+        agentOperation: 'Операция ассистента',
         details: 'Подробности'
       },
       columns: {
@@ -5184,6 +5299,9 @@ export default {
     notConfigured: 'Не настроено',
     sharedAgentModelLabel: 'Модель из общего агента',
     noModel: 'Нет доступных моделей',
+    modelAuto: 'По умолчанию',
+    modelFollowDefault: 'Как по умолчанию',
+    modelAutoHint: 'Модель чата текущей базы знаний, а вне базы знаний или если она не задана — первая доступная модель чата',
     stopGeneration: 'Остановить генерацию',
     send: 'Отправить',
     steerCurrent: 'Дополнить текущую задачу',

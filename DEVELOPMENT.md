@@ -40,6 +40,21 @@ docker build --pull=false -f frontend/Dockerfile.helmskb -t p006-helmskb-local-u
 
 此命令只构建前端，不是完整平台部署。发布时使用独立注册表和不可变摘要，并记录源码提交和构建依据。
 
+## 助手后端构建
+
+单项助手移植的运行版本为 `0.8.3-helmskb-assistant.1`。需要 Go 1.26、Rust 1.90 或兼容版本、C/C++ 编译器及与 Debian Bookworm 兼容的构建环境。依赖由 `go.sum` 和 AnyDoc 的 `Cargo.lock` 校验，保留校验服务。Linux amd64 构建示例：
+
+```bash
+export GOMAXPROCS=2 GOFLAGS=-p=2 CARGO_BUILD_JOBS=2
+bash scripts/build-helmskb-server.sh
+docker build --pull=false -f docker/Dockerfile.helmskb-runtime \
+  --build-arg SOURCE_COMMIT="$(git rev-parse HEAD)" \
+  --build-arg SERVER_SHA256="$(sha256sum build/helmskb/WeKnora | cut -d' ' -f1)" \
+  -t p006-helmskb-local-app:0.8.3-assistant.1 .
+```
+
+打包基于固定的官方 v0.8.3 运行镜像，保留原有原生依赖、BrowserSkill 与第三方对应源码，只替换完整编译的服务、助手配置及已审阅迁移。生成的 `build/` 不提交；发布必须记录源码提交、二进制 SHA-256、镜像摘要和迁移结果。该命令不自动部署。助手测试与迁移说明见 [移植记录](docs/engineering/assistant-backport.md)。
+
 ## 环境隔离
 
 当前多项目工作区登记编号为 **P006**，仅登记 `local`，状态为 `not_deployed`，没有分配运行端口。`test` 与 `production` 尚未接入。

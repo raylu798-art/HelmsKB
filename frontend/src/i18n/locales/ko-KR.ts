@@ -1497,6 +1497,8 @@ export default {
       thinkingDesc: '동적이고 반성적인 문제 해결 사고 도구',
       todoWrite: '계획 수립',
       todoWriteDesc: '구조화된 연구 계획 생성',
+      askUser: '사용자에게 질문',
+      askUserDesc: '필요한 정보가 부족할 때 사용자에게 질문하고 답변을 기다린 후 계속합니다',
       searchKnowledge: '지식베이스 검색',
       searchKnowledgeDesc: '의미, 키워드 또는 하이브리드 방식으로 지식베이스 청크 검색',
       readDocument: '문서 읽기',
@@ -1809,6 +1811,7 @@ export default {
       readDocument: '문서 읽기',
       listDocuments: '문서 목록 보기',
       todoWrite: '계획 관리',
+      askUser: '사용자에게 질문',
       knowledgeGraphExtract: '지식 그래프 추출',
       thinking: '사고',
       attachmentParsing: '첨부 파일 파싱',
@@ -1871,6 +1874,7 @@ export default {
       waiting: '인증 대기 · {target}',
       waitingStatus: '인증 대기',
       targetWithTool: '{service} › {tool}',
+      dockQuestion: '계속하려면 {target} 인증이 필요합니다',
       titleWithService: 'OAuth · {service}',
       titleWithTool: 'OAuth · {service} › {tool}',
       desc: '인증을 누르면 새 창에서 로그인합니다. 인증이 완료되면 이 도구 호출이 자동으로 계속됩니다.',
@@ -1885,10 +1889,37 @@ export default {
       resumeFailed: '실행 재개 실패, 다시 시도하세요',
       skipFailed: '건너뛰기 실패, 다시 시도하세요'
     },
+    askUser: {
+      title: '질문이 있습니다',
+      selectPlaceholder: '선택하세요',
+      textPlaceholder: '답변을 입력하세요',
+      otherPlaceholder: '기타(선택)',
+      decline: '답변 안 함',
+      submit: '제출',
+      declinedTag: '답변 거절함',
+      submitted: '제출됨',
+      answeredTag: '답변함',
+      timedOutTag: '시간 내 답변 없음',
+      canceledTag: '취소됨',
+      unansweredTag: '답변 없음',
+      submitFailed: '제출 실패',
+    },
+    promptDock: {
+      approvalTitle: '검토가 필요합니다',
+      oauthTitle: '인증이 필요합니다',
+      waiting: '응답 대기 중',
+      handle: '응답하기',
+      pager: '{current} / {total}',
+      previous: '이전',
+      next: '다음',
+      collapse: '접기',
+      expand: '펼치기'
+    },
     toolApproval: {
       waiting: '승인 대기 · {target}',
       waitingStatus: '승인 대기',
       targetWithTool: '{service} › {tool}',
+      dockQuestion: '{target} 실행을 허용할까요?',
       titleWithTarget: '검토 · {service} › {tool}',
       argsLabel: '인수',
       argsModified: '수정됨',
@@ -1897,6 +1928,9 @@ export default {
       reject: '거부',
       approvedTag: '승인됨',
       rejectedTag: '거부됨',
+      parked: '백그라운드에서 대기 중 — 나중에 처리할 수 있습니다',
+      parkedUntil: '백그라운드에서 대기 중 — {time} 전에 처리하세요',
+      abandonedTag: '포기됨',
       invalidJson: '유효한 JSON이 아닙니다',
       submitted: '제출됨',
       submitFailed: '제출 실패',
@@ -2011,7 +2045,86 @@ export default {
     getDocumentInfo: '문서 정보 조회',
     queryKnowledgeGraph: '지식 그래프 쿼리',
     think: '깊이 생각하기',
-    todoWrite: '계획 수립'
+    todoWrite: '계획 수립',
+    askUser: '사용자에게 질문'
+  },
+  assistant: {
+    title: 'HelmsKB 어시스턴트',
+    newConversation: '새 대화',
+    resize: '어시스턴트 너비 조정',
+    layout: {
+      dock: '오른쪽에 고정',
+      float: '떠 있는 창으로 전환',
+    },
+    welcomeTitle: '무엇을 도와드릴까요?',
+    welcomeDesc: 'HelmsKB 사용법을 안내하고, 워크스페이스의 문서 파싱, 지식 베이스 활동, Wiki 문제를 확인하고 처리할 수 있습니다. 변경 전에 확인을 요청할지는 입력창 아래의 권한 수준에 따라 정해집니다.',
+    startFailed: '어시스턴트를 시작하지 못했습니다. 다시 시도해 주세요.',
+    askAboutDocument: '{name}에게 묻기',
+    access: {
+      title: '권한 수준',
+      capped: '워크스페이스 관리자가 허용하지 않았습니다',
+      levels: {
+        read_only: {
+          label: '읽기 전용',
+          desc: '확인만 하고 아무것도 변경하지 않습니다'
+        },
+        confirm: {
+          label: '변경 전 확인',
+          desc: '변경하거나 삭제할 때마다 먼저 확인을 요청합니다'
+        },
+        auto_write: {
+          label: '자동 실행',
+          desc: '되돌릴 수 있는 변경은 바로 실행하고, 삭제는 여전히 확인합니다'
+        }
+      }
+    },
+    context: {
+      currentPage: '현재 페이지',
+      detach: '현재 페이지 포함하지 않기',
+      attachedTip: '현재 페이지 포함됨: {path}',
+      detachedTip: '클릭하여 현재 페이지 포함: {path}'
+    },
+    starters: {
+      wikiIssues: '이 페이지에 처리할 문제가 있나요?',
+      wikiSummary: '이 Wiki 페이지를 요약해 줘',
+      documentStatus: '이 문서의 파싱 상태는 어떤가요?',
+      documentSummary: '이 문서를 요약해 줘',
+      failedDocuments: '이 지식 베이스에서 파싱에 실패한 문서는?',
+      recentActivity: '이 지식 베이스에 최근 어떤 변경이 있었나요?',
+      formats: 'HelmsKB는 어떤 문서 형식을 지원하나요?',
+      createWiki: 'Wiki 지식 베이스는 어떻게 만드나요?'
+    }
+  },
+  assistantSettings: {
+    title: '어시스턴트',
+    description: '{name}의 진입점, 열기 방식, 권한 수준을 설정합니다.',
+    introTitle: '어시스턴트는 내가 할 수 있는 일만 합니다',
+    introDescription: '어시스턴트는 내 계정으로 동작하므로, 볼 수 있고 변경할 수 있는 범위가 워크스페이스 역할과 같습니다. 권한 수준은 이 범위를 더 좁힐 뿐 넓히지 않습니다.',
+    personalGroup: '개인 설정',
+    accessLabel: '권한 수준',
+    accessDescription: '어시스턴트가 무언가를 변경하기 전에 확인을 요청할지 정합니다. 어시스턴트 입력창 아래에서도 언제든 바꿀 수 있습니다.',
+    accessCeilingHint: '워크스페이스 관리자가 최고 수준을 "{level}"(으)로 제한했습니다.',
+    entryLabel: '진입점',
+    entryDescription: '어느 것을 선택해도 명령 팔레트({shortcut})에서 어시스턴트를 열 수 있습니다.',
+    entries: {
+      sidebar: '사이드바',
+      launcher: '화면 오른쪽',
+      palette: '명령 팔레트만'
+    },
+    layoutLabel: '열기 방식',
+    layoutDescription: '오른쪽에 고정하면 페이지가 좁아지고, 플로팅이면 페이지 위에 겹쳐 표시됩니다. 창이 좁으면 항상 플로팅으로 열립니다.',
+    layouts: {
+      docked: '오른쪽에 고정',
+      floating: '플로팅'
+    },
+    workspaceGroup: '워크스페이스',
+    adminOnly: '관리자만 변경할 수 있습니다',
+    nameLabel: '어시스턴트 이름',
+    nameDescription: '워크스페이스의 모든 멤버에게 보이는 이름입니다. 비워 두면 기본 이름을 사용합니다.',
+    ceilingLabel: '최고 권한 수준',
+    ceilingDescription: '멤버가 선택할 수 있는 최고 수준입니다. "읽기 전용"으로 설정하면 이 워크스페이스에서 어시스턴트는 아무것도 변경하지 않습니다.',
+    saved: '저장했습니다',
+    saveFailed: '저장하지 못했습니다: {message}'
   },
   commandPalette: {
     placeholder: '지식베이스, 파일, 대화 검색…',
@@ -2036,7 +2149,8 @@ export default {
       agents: '에이전트 열기',
       organizations: '공유 공간 열기',
       settings: '설정 열기',
-      productTour: '사용 가이드'
+      productTour: '사용 가이드',
+      assistant: '{name} 열기'
     },
     match: {
       vector: '벡터',
@@ -4727,12 +4841,10 @@ export default {
       globalIssuesEmpty: '보류 중인 콘텐츠 문제가 없습니다',
       issuePagePrefix: '페이지: ',
       issueGoFix: '수정하러 가기',
-      fixAssistantTitle: 'Wiki 스마트 수정 도우미',
       issueFixSuggestions: '콘텐츠 최적화 제안 ({count})',
       issueFixSingle: '수정',
-      fixStartError: '수정 도우미 시작 실패',
-      issueFixPromptSingle: '페이지 [[{slug}]] 의 문제(ID: {id})를 수정해 주세요.',
-      issueFixPromptAutoStart: '페이지 [[{slug}]] 의 다음 문제들을 수정해 주세요:'
+      issueFixPromptSingle: '이 Wiki 문제를 수정해 줘: {description}',
+      issueFixPromptAll: '이 페이지의 처리할 문제 {count}개를 수정해 줘'
     },
     indexing: {
       title: '인덱싱 전략',
@@ -4842,6 +4954,7 @@ export default {
       systemActor: '시스템',
       actorWithAPIKey: '{actor} · API Key · {name}',
       actorAPIKey: 'API Key · {name}',
+      viaAssistant: 'HelmsKB 어시스턴트 경유',
       knowledgeBase: '지식 베이스',
       countItems: '{count}개 항목',
       titleWithCount: '{title} 외 {count}개',
@@ -4947,6 +5060,8 @@ export default {
         actorId: '시작자 ID',
         apiKeyName: 'API 키 이름',
         apiKeyId: 'API 키 ID',
+        agentSessionId: '어시스턴트 대화 ID',
+        agentOperation: '어시스턴트 작업',
         details: '상세'
       },
       columns: {
@@ -5184,6 +5299,9 @@ export default {
     notConfigured: '구성되지 않음',
     sharedAgentModelLabel: '공유 에이전트에 구성된 모델',
     noModel: '사용 가능한 모델 없음',
+    modelAuto: '기본',
+    modelFollowDefault: '기본값 따르기',
+    modelAutoHint: '현재 지식 베이스의 대화 모델을 사용하며, 지식 베이스 밖이거나 설정되지 않은 경우 첫 번째로 사용 가능한 대화 모델을 사용합니다',
     stopGeneration: '생성 중지',
     send: '전송',
     steerCurrent: '현재 작업에 추가',

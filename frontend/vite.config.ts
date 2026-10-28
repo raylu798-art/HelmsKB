@@ -68,6 +68,10 @@ function resolveVueOfficePptxEntry(): string {
 }
 
 export default defineConfig({
+  css: {
+    // Bound worker startup and memory use on local Windows builds.
+    preprocessorMaxWorkers: 1,
+  },
   define: {
     __FRONTEND_VERSION__: JSON.stringify(FRONTEND_VERSION),
     __FRONTEND_COMMIT__: JSON.stringify(FRONTEND_COMMIT),
