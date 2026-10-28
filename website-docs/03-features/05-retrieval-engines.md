@@ -23,7 +23,7 @@
 
 | 引擎 | RETRIEVE_DRIVER 值 | 向量检索 | 关键词/全文 | 关键词打分 | 中文分词 | 维度管理 | 阈值下推 | 部署复杂度 | 适用场景 |
 |------|-------------------|----------|------------|-----------|---------|----------|---------|-----------|----------|
-| PostgreSQL | `postgres` | pgvector halfvec + HNSW 表达式索引 | ParadeDB BM25（`\|\|\|`） | BM25（paradedb.score） | ParadeDB tokenizer | 单表混维，表达式索引按维 cast | 距离阈值 SQL 内 | 低（默认镜像内置） | 默认选择；与业务同库，事务一致 |
+| PostgreSQL | `postgres` | pgvector halfvec + HNSW 表达式索引 | pg_search BM25（`\|\|\|`） | BM25（优先 `paradedb.score`，兼容 `pgsearch.score`） | pg_search tokenizer | 单表混维，表达式索引按维 cast | 距离阈值 SQL 内 | 低（默认镜像内置） | 默认选择；与业务同库，事务一致 |
 | SQLite | `sqlite` | sqlite-vec vec0（cosine） | FTS5 contentless | FTS5 | 应用侧 bigram | 每维一张 vec0 虚表 | 应用侧 | 极低（内嵌） | 桌面版 / 开发 / 微型部署 |
 | Elasticsearch v8 | `elasticsearch_v8` | script_score cosineSimilarity | match（BM25） | BM25 | ES analyzer | dense_vector 单索引 | 应用侧 | 中 | 已有 ES 8 集群 |
 | Elasticsearch v7 | `elasticsearch_v7` | 不支持（Support 仅 keywords） | match（BM25） | BM25 | ES analyzer | — | — | 中 | 存量 ES 7，仅作关键词引擎，需与其他向量引擎组合 |
@@ -34,7 +34,7 @@
 | Doris | `doris` | ANN HNSW inner_product/cosine | 倒排索引 MATCH_ANY | 倒排命中 | 建表声明 chinese parser | 每维一张表 | SQL 内 | 高 | 已有 Doris 数仓，检索与分析一体 |
 | 腾讯云 VectorDB | `tencent_vectordb` | HNSW COSINE | 稀疏向量 BM25（SPARSE_INVERTED） | BM25 | SDK SparseEncoder | 每维一个 collection | 应用侧 | 低（云托管） | 腾讯云托管、免运维 |
 
-> 说明：无论引擎自身是否提供"混合检索"，HelmsKB 的混合始终是**上层统一的 RRF 融合**（`knowledgebase_search_fusion.go`）——向量与关键词各自独立检索，按 rank 加权合并（见 [混合检索打分与归一化](#_5-混合检索打分与归一化)），因此各引擎只需分别提供两类单模检索。
+> 说明：无论引擎自身是否提供"混合检索"，WeKnora 的混合始终是**上层统一的 RRF 融合**（`knowledgebase_search_fusion.go`）——向量与关键词各自独立检索，按 rank 加权合并（见 [混合检索打分与归一化](#_5-混合检索打分与归一化)），因此各引擎只需分别提供两类单模检索。
 
 ## 配置方法汇总 {#_6-配置方法汇总}
 
@@ -125,7 +125,8 @@ flowchart TD
 `internal/application/repository/retriever/postgres/repository.go`。数据与业务库同库（`embeddings` 表，GORM 管理）。
 
 - **向量检索**：pgvector `halfvec`（半精度，2 字节/维）。`embedding` 列不定维，HNSW 索引建在表达式 `(embedding::halfvec(dim)) halfvec_cosine_ops` 上——**ORDER BY 表达式必须与索引表达式完全一致**（两侧显式 cast），否则退化为顺序扫描（源码注释引 pgvector issue [#702](https://github.com/pgvector/pgvector/issues/702)/[#835](https://github.com/pgvector/pgvector/issues/835)）。查询用子查询先取 `expandedTopK`（TopK*2，夹在 [100,200]，避免大 LIMIT 拖垮 HNSW）个候选算 `distance = embedding <=> query`，再按 `distance <= 1-threshold` 过滤，`score = 1 - distance`。事务内 `SET LOCAL hnsw.ef_search`（≥40）与 `SET LOCAL hnsw.iterative_scan = strict_order`（pgvector ≥ 0.8，选择性过滤下持续补召回），老版本 GUC 不存在时自动降级重试。
-- **关键词检索**：ParadeDB `pg_search` BM25——`content ||| query`（任意 token 匹配）+ `paradedb.score(id) as score`。
+- **关键词检索**：`pg_search` BM25——`content ||| query`（任意 token 匹配）。首次关键词查询探测评分函数，优先使用 `paradedb.score(anyelement) -> real`，兼容部分 PolarDB 实例的 `pgsearch.score(anyelement) -> real`；仅缓存成功结果，探测失败可重试。缓存按检索仓库实例隔离，纯向量查询不触发探测。
+- **兼容边界**：评分函数适配不会安装扩展、创建包装函数或修改数据库结构；仍须预先具备兼容的 `pg_search`、`|||` 操作符及有效 BM25 索引。不代表所有 PolarDB 版本均受支持；没有匹配评分函数时，关键词检索返回明确错误。
 - **过滤**：`knowledge_base_id` / `knowledge_id` / `tag_id` IN 过滤（AND 语义），`is_enabled` 为 NULL 或 true。
 - **建索引**：`BatchSave` + `ON CONFLICT DO NOTHING`；删除按 chunk/source/knowledge ID 物理删除。
 
@@ -151,7 +152,7 @@ flowchart TD
 
 #### Elasticsearch v7 — 仅关键词 {#_2-4-elasticsearch-v7-—-仅关键词}
 
-`internal/application/repository/retriever/elasticsearch/v7/repository.go`。注意：**`Support()` 只返回 `[keywords]`**——v7 驱动在 HelmsKB 中仅作为 BM25 关键词引擎注册（代码中保留了 `script_score cosineSimilarity` 的向量查询构造，但能力声明不含 vector，Composite 不会把向量请求路由给它）。需向量检索时应搭配其他驱动（如 `RETRIEVE_DRIVER=postgres,elasticsearch_v7`）或升级 v8。
+`internal/application/repository/retriever/elasticsearch/v7/repository.go`。注意：**`Support()` 只返回 `[keywords]`**——v7 驱动在 WeKnora 中仅作为 BM25 关键词引擎注册（代码中保留了 `script_score cosineSimilarity` 的向量查询构造，但能力声明不含 vector，Composite 不会把向量请求路由给它）。需向量检索时应搭配其他驱动（如 `RETRIEVE_DRIVER=postgres,elasticsearch_v7`）或升级 v8。
 
 #### OpenSearch {#_2-5-opensearch}
 
@@ -221,7 +222,7 @@ flowchart TD
 
 ### Embedding 维度管理 {#_4-embedding-维度管理}
 
-HelmsKB 允许不同 KB 使用不同 embedding 模型（维度各异），各引擎的维度隔离策略：
+WeKnora 允许不同 KB 使用不同 embedding 模型（维度各异），各引擎的维度隔离策略：
 
 | 引擎 | 策略 |
 |------|------|

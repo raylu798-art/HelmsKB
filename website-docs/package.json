@@ -9,7 +9,6 @@
     "dev:homepage": "npm --prefix homepage run dev",
     "build": "node scripts/build-site.mjs",
     "build:docs": "vitepress build",
-    "build:embedded": "node scripts/build-embedded.mjs",
     "build:homepage": "npm --prefix homepage run build",
     "preview": "node scripts/serve-site.mjs",
     "check:mermaid": "node scripts/check-mermaid.mjs",

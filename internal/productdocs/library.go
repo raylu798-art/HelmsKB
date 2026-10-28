@@ -209,10 +209,7 @@ func normalizeRef(ref string) (string, string) {
 	ref = strings.TrimSpace(ref)
 	ref, anchor, _ := strings.Cut(ref, "#")
 	ref = strings.TrimPrefix(ref, PublicBaseURL)
-	// Accept references from old assistant conversations, but emit links to
-	// this deployment's bundled documentation only.
-	ref = strings.TrimPrefix(ref, "https://weknora.weixin.qq.com/docs/")
-	ref = strings.TrimPrefix(ref, "http://weknora.weixin.qq.com/docs/")
+	ref = strings.TrimPrefix(ref, "http://"+strings.TrimPrefix(PublicBaseURL, "https://"))
 	ref = strings.TrimPrefix(ref, "/")
 	ref = strings.TrimPrefix(ref, "docs/")
 	ref = strings.TrimSuffix(strings.TrimSuffix(ref, "/"), ".md")

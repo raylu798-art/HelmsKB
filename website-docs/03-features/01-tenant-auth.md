@@ -1,6 +1,6 @@
 # 租户、用户与认证授权
 
-工作空间是 HelmsKB 的资源与权限边界，知识库、模型、智能体、会话和存储配额均归属空间。一个用户可以加入多个空间，并在各空间拥有不同角色。组织用于连接多个空间，共享知识库和智能体。后端使用 Tenant 表示工作空间。
+工作空间是 WeKnora 的资源与权限边界，知识库、模型、智能体、会话和存储配额均归属空间。一个用户可以加入多个空间，并在各空间拥有不同角色。组织用于连接多个空间，共享知识库和智能体。后端使用 Tenant 表示工作空间。
 
 成员邀请、资源共享和 API 接入的入口如下。管理整个部署需要独立的平台权限。
 
@@ -347,7 +347,7 @@ flowchart LR
 
 | 能力 | 说明 |
 | --- | --- |
-| `retrieve` | 读取 / 搜索知识库数据（KB 列表、知识详情、hybrid-search 等） |
+| `retrieve` | 读取 / 搜索知识库数据（KB 列表、知识详情、hybrid-search、共享 KB 清单发现等） |
 | `chat` | 会话流：创建 session、knowledge-chat / agent-chat、加载与删除消息 |
 | `read_agents` | 列出与查看 Agent（不含创建修改） |
 | `ingest` | 写内容：上传文档、编辑 chunk / FAQ / 标签 / Wiki、批量删除与移动知识 |
@@ -457,7 +457,7 @@ r.GET("/auth/oidc/callback", handler.OIDCRedirectCallback)    // 授权码回调
 ```mermaid
 sequenceDiagram
     participant B as "浏览器 (SPA)"
-    participant W as "HelmsKB 后端"
+    participant W as "WeKnora 后端"
     participant IdP as "OIDC Provider"
     B->>W: GET /auth/oidc/url?redirect_uri=...
     W->>W: 生成 nonce(24B), 签名 state={nonce, redirect_uri}

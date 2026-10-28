@@ -10,7 +10,7 @@ import (
 	"github.com/Tencent/WeKnora/internal/types"
 )
 
-// HelmsKB documentation tool names.
+// WeKnora documentation tool names.
 const (
 	ToolSearchWeKnoraDocs = "search_weknora_docs"
 	ToolReadWeKnoraDoc    = "read_weknora_doc"
@@ -29,9 +29,9 @@ const (
 )
 
 const searchWeKnoraDocsDescription = "" +
-	"Search the HelmsKB documentation for this version: setup, configuration and environment " +
+	"Search the WeKnora documentation for this version: setup, configuration and environment " +
 	"variables, features and how they behave, API reference, clients, architecture and release notes. " +
-	"Use it for how-to and how-it-works questions about HelmsKB itself; it does not show the state " +
+	"Use it for how-to and how-it-works questions about WeKnora itself; it does not show the state " +
 	"of this workspace (use operations for that). The documentation is written in Chinese, so search " +
 	"with Chinese terms plus any product or setting names (e.g. \"Wiki 抽取粒度\", \"MinerU\", " +
 	"\"OLLAMA_BASE_URL\"). Returns matching sections with path, anchor, url and a snippet; read one " +
@@ -60,7 +60,7 @@ const searchWeKnoraDocsSchemaFormat = `{
 }`
 
 const readWeKnoraDocDescription = "" +
-	"Read a HelmsKB documentation page or one section of it, as Markdown. path is a page path or url " +
+	"Read a WeKnora documentation page or one section of it, as Markdown. path is a page path or url " +
 	"from search_weknora_docs; anchor (or a #fragment in the url) selects a section and its " +
 	"subsections. A page too long to return whole comes back as its outline; read a section from it. " +
 	"A section too long for one read is cut at next_offset; pass it as offset to read on. " +

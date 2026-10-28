@@ -1,0 +1,106 @@
+name: p006-helmskb-test
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:?Pin PostgreSQL image digest}
+    container_name: p006-helmskb-test-postgres
+    environment:
+      POSTGRES_USER: p006_test
+      POSTGRES_DB: p006_helmskb_test
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Independent secret required}
+    volumes: [postgres:/var/lib/postgresql]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U p006_test -d p006_helmskb_test']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    mem_limit: 1200m
+    restart: unless-stopped
+  redis:
+    image: ${REDIS_IMAGE:?Pin Redis image digest}
+    container_name: p006-helmskb-test-redis
+    command: [redis-server, /usr/local/etc/redis/redis.conf]
+    volumes: [redis:/data, './redis.conf:/usr/local/etc/redis/redis.conf:ro']
+    healthcheck:
+      test: [CMD-SHELL, 'REDISCLI_AUTH=$$(cat /run/redis-password) redis-cli ping | grep -q PONG']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    secrets: [redis-password]
+    mem_limit: 256m
+    restart: unless-stopped
+  docreader:
+    image: ${DOCREADER_IMAGE:?Pin same-source DocReader image ID}
+    container_name: p006-helmskb-test-docreader
+    volumes: [docreader-tmp:/tmp/docreader]
+    environment: {LOG_LEVEL: INFO}
+    healthcheck:
+      test: [CMD, /bin/grpc_health_probe, '-addr=:50051']
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
+    mem_limit: 1500m
+    restart: unless-stopped
+  app:
+    image: ${APP_IMAGE:?Pin same-source app image ID}
+    container_name: p006-helmskb-test-app
+    env_file: .env
+    environment:
+      DB_DRIVER: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: p006_test
+      DB_NAME: p006_helmskb_test
+      RETRIEVE_DRIVER: postgres
+      REDIS_ADDR: redis:6379
+      REDIS_PREFIX: 'p006-test:'
+      STREAM_MANAGER_TYPE: redis
+      DOCREADER_ADDR: docreader:50051
+      DOCREADER_TRANSPORT: grpc
+      STORAGE_TYPE: local
+      LOCAL_STORAGE_BASE_DIR: /data/files
+      GIN_MODE: release
+      TZ: Asia/Shanghai
+      AUTO_MIGRATE: 'true'
+      AUTO_RECOVER_DIRTY: 'false'
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_OPTIONAL: 'true'
+      NO_PROXY: 'localhost,127.0.0.1,postgres,redis,docreader,host.docker.internal'
+      WEKNORA_SANDBOX_DOCKER_ENABLED: 'false'
+      CONCURRENCY_POOL_SIZE: 2
+      LOG_LEVEL: info
+    volumes: [files:/data/files, 'docreader-tmp:/tmp/docreader:ro']
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      docreader: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost:8080/health']
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 90s
+    mem_limit: 1400m
+    restart: unless-stopped
+  frontend:
+    image: ${FRONTEND_IMAGE:?Pin same-source frontend image ID}
+    container_name: p006-helmskb-test-frontend
+    ports: ['127.0.0.1:8096:80']
+    environment: {APP_HOST: app, APP_PORT: '8080', APP_SCHEME: http, MAX_FILE_SIZE_MB: '50', DEFAULT_LOCALE: zh-CN}
+    depends_on: {app: {condition: service_healthy}}
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, 'http://127.0.0.1/']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    mem_limit: 128m
+    restart: unless-stopped
+volumes:
+  postgres: {name: p006-helmskb-test-postgres}
+  redis: {name: p006-helmskb-test-redis}
+  files: {name: p006-helmskb-test-files}
+  docreader-tmp: {name: p006-helmskb-test-docreader-tmp}
+networks:
+  default: {name: p006-helmskb-test-network}
+secrets:
+  redis-password: {file: ./redis-password}

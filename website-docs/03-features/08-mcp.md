@@ -1,11 +1,11 @@
 # MCP（Model Context Protocol）集成
 
-MCP 用于智能体与外部工具之间的连接。HelmsKB 支持接入外部 MCP 服务，也提供独立 MCP Server 供其他客户端调用：
+MCP 用于智能体与外部工具之间的连接。WeKnora 支持接入外部 MCP 服务，也提供独立 MCP Server 供其他客户端调用：
 
-1. **HelmsKB 作为 MCP 客户端**：在「工具箱 → MCP服务」中接入任意外部 MCP server（SSE / Streamable HTTP），其工具通过目录按需加载，供 Agent 在对话中调用。支持 API Key / Bearer / OAuth 2.0（含动态客户端注册与 PKCE，也可填写预注册客户端；支持以 JWT Bearer 断言代用户获取 token）三种认证策略、按工具粒度的启停与人工审批，以及会话内（in-conversation）OAuth 授权。
-2. **HelmsKB 作为 MCP Server**：在「设置 → 发布集成 → MCP Server」中为当前空间创建一个或多个 MCP 端点，每个端点有独立的令牌、知识库范围和工具清单，Claude Desktop、Cursor、Claude Code、VS Code Copilot 等 MCP 客户端通过 Streamable HTTP 直接连接，无需额外部署进程。仓库 `mcp-server/` 目录下的 Python 服务是旧方案，已标记弃用。
+1. **WeKnora 作为 MCP 客户端**：在「工具箱 → MCP服务」中接入任意外部 MCP server（SSE / Streamable HTTP），其工具通过目录按需加载，供 Agent 在对话中调用。支持 API Key / Bearer / OAuth 2.0（含动态客户端注册与 PKCE，也可填写预注册客户端；支持以 JWT Bearer 断言代用户获取 token）三种认证策略、按工具粒度的启停与人工审批，以及会话内（in-conversation）OAuth 授权。
+2. **WeKnora 作为 MCP Server**：在「设置 → 发布集成 → MCP Server」中为当前空间创建一个或多个 MCP 端点，每个端点有独立的令牌、知识库范围和工具清单，支持 Streamable HTTP 和 Bearer 请求头的客户端可直接连接，无需额外部署桥接进程；具体配置方式见下方说明。仓库 `mcp-server/` 目录下的 Python 服务是旧方案，已标记弃用。
 
-接入外部服务可扩展 HelmsKB 智能体的工具；运行 HelmsKB MCP Server 可让外部客户端使用知识库检索、问答和管理能力。
+接入外部服务可扩展 WeKnora 智能体的工具；运行 WeKnora MCP Server 可让外部客户端使用知识库检索、问答和管理能力。
 
 空间 Admin 在侧边栏「工具箱 → MCP服务」新建服务（旧的「设置 → MCP 服务」链接会自动跳转到这里），填好连接后同步工具并写使用说明，再在智能体中选择所需服务。需要控制写入或外发操作时，可为相应工具开启人工审批，调用前会显示确认卡片。
 
@@ -27,20 +27,22 @@ MCP 管理页支持按服务名称和卡片显示的用途说明搜索。搜索�
 1. **连接配置**：填写名称和服务 URL，选择 SSE 或 Streamable HTTP 传输，并配置认证（无 / 自定义 Header、API Key / Token、OAuth 2.0）和超时、重试。也可以用「从代码导入」粘贴标准 `mcpServers` JSON 自动填表；只含 `command` / `args` 的 stdio 配置不支持。保存后可测试连接；OAuth 服务点「去授权」时会先自动保存，再按当前用户发起授权。
 2. **工具与用途说明**：连接并拉取 Tools，系统会保存完整的工具描述和参数定义；再填写「使用说明」，说明服务用途、适用场景和关键约束。已同步工具后可点「AI 生成」，根据已启用的工具生成一段精简说明，检查后保存。工具列表中可逐个设置「启用工具」和「调用需审批」，修改即时生效，刷新目录不会覆盖这些设置。
 
-模型先读取服务的使用说明，再按需加载具体工具，所以使用说明直接影响 Agent 能否选对服务。OAuth 服务按调用者分别授权。工具需要审批时，在对话中检查参数并确认；单独停用某个工具后，运行时不会执行该工具。HelmsKB 的 MCP 客户端不支持 stdio 传输。
+模型先读取服务的使用说明，再按需加载具体工具，所以使用说明直接影响 Agent 能否选对服务。OAuth 服务按调用者分别授权。工具需要审批时，在对话中检查参数并确认；单独停用某个工具后，运行时不会执行该工具。WeKnora 的 MCP 客户端不支持 stdio 传输。
 
 工具人工审批通过后，如果 OAuth 尚未授权或已经失效，对话会继续给出 OAuth 授权入口；工具审批与第三方授权是两个独立步骤。无需浏览器的调用者可使用 JWT Bearer 断言换取自身主体的 token，前提是上游支持该授权方式，详见 [OAuth API](../04-api/02-api-agent-mcp.md)。
 
 ## 供外部客户端调用
 
-在「设置 → 发布集成 → MCP Server」新建端点：填写名称、选择可访问的知识库（留空为全部）、勾选要暴露的工具，并按需指定 `ask` 使用的默认 Agent（留空时使用内置快速问答）和每分钟调用上限（默认 60 次）。创建后会一次性展示令牌和地址 `/mcp/<endpoint_id>`，页面同时给出 Cursor / VS Code / Claude Desktop 的 `mcpServers` 配置、Claude Code 的一行命令，以及仅支持 stdio 的客户端通过 `mcp-remote` 桥接的写法。
+在「设置 → 发布集成 → MCP Server」新建端点：填写名称、选择可访问的知识库（留空为全部）、勾选要暴露的工具，并按需指定 `ask` 使用的默认 Agent（留空时使用内置快速问答）和每分钟调用上限（默认 60 次）。创建后会一次性展示令牌和地址 `/mcp/<endpoint_id>`，页面给出 Cursor 可用的 `mcpServers` JSON、VS Code 专用的 `servers` JSON、Claude Code 的一行命令，以及 STDIO 备用配置。将 VS Code 选项卡中的 JSON 写入工作区的 `.vscode/mcp.json`；若已有配置，请将对应条目合并到现有 `servers` 对象中，保留其他服务。该配置使用 `type: "http"`、端点 URL 和 `Authorization` 请求头，无需桥接进程。Claude Desktop 需在自定义连接器中填写可访问的 HTTPS 地址，并在可用时选择「无需登录」和 Request headers；该请求头功能为有限开放的测试版，并非所有组织都可用。
 
-使用自定义反向代理时，除 `/api/` 外，还需将 `/mcp/` 原路径转发到 HelmsKB 后端，保留 `Authorization` 和 MCP 协议头，并关闭响应缓冲、为长连接设置足够的读写超时。仓库自带的 Nginx、Vite 开发及预览配置已包含该代理，可直接使用网站域名连接，无需另行暴露后端 8080 端口。
+仅支持 stdio，或无法使用原生 HTTP/Bearer 配置的客户端，可使用固定版本 `mcp-remote@0.15.1`。STDIO 示例在 `args` 中保留字面量 `Authorization:${WEKNORA_MCP_AUTH}`，完整的 `Bearer <token>` 填入对应服务的 `env.WEKNORA_MCP_AUTH`，避免将令牌直接写入命令参数。令牌仍保存在客户端配置中，请按凭证妥善管理。
+
+使用自定义反向代理时，除 `/api/` 外，还需将 `/mcp/` 原路径转发到 WeKnora 后端，保留 `Authorization` 和 MCP 协议头，并关闭响应缓冲、为长连接设置足够的读写超时。仓库自带的 Nginx、Vite 开发及预览配置已包含该代理，可直接使用网站域名连接，无需另行暴露后端 8080 端口。
 
 <Screenshot
   src="/screenshots/mcp-server-endpoint.png"
   caption="发布集成 → MCP Server：端点创建完成后的地址、令牌与客户端配置"
-  hint="新建端点后的结果页：一次性令牌与 /mcp/<endpoint_id> 地址、Cursor / Claude Desktop 的 mcpServers 配置与 Claude Code 命令；背景可见端点的知识库范围与四组工具勾选。" />
+  hint="新建端点后的结果页：一次性令牌与 /mcp/<endpoint_id> 地址、客户端配置与 Claude Code 命令；背景可见端点的知识库范围与四组工具勾选。" />
 
 一个空间可以创建多个端点。例如给客服团队一个只开检索和问答、只看两个知识库的端点，给内容团队另一个开了写入工具的端点。令牌可随时轮换，端点可随时停用，删除端点后使用它的客户端立即断开。
 
@@ -48,10 +50,30 @@ MCP 管理页支持按服务名称和卡片显示的用途说明搜索。搜索�
 
 | 组 | 工具 | 说明 |
 |---|---|---|
-| 检索与阅读 | `list_knowledge_bases`、`search_knowledge`、`grep_chunks`、`list_documents`、`read_document` | 知识库参数同时接受 ID 或名称；`search_knowledge` 用 `mode`（hybrid / semantic / keyword）选择检索方式并可设 `limit`（默认 10，上限 30）；`grep_chunks` 保持大小写不敏感的正则语义：从模式里提取字面词作为关键词索引的检索词（没有关键词索引的库改用语义索引取候选），再逐条用正则校验，返回的分块都匹配该模式；不含任何字面词的模式（如 `^\d+$`）会被拒绝；`read_document` 按 `offset` / `limit` 翻页，或用 `query` 在文档内查找短语 |
+| 检索与阅读 | `list_knowledge_bases`、`search_knowledge`、`grep_chunks`、`list_documents`、`read_document` | 知识库参数同时接受 ID 或名称；`search_knowledge` 用 `mode`（hybrid / semantic / keyword）选择检索方式并可设 `limit`（默认 10，上限 30）；`grep_chunks` 保持大小写不敏感的正则语义：从模式里提取字面词作为关键词索引的检索词（没有关键词索引的库改用语义索引取候选），再逐条用正则校验，返回的分块都匹配该模式；不含任何字面词的模式（如 `^\d+$`）会被拒绝；`read_document` 无 `query` 时按 `offset` / `limit` 翻页；传入 `query` 时按空白分词，不区分大小写，同一分块必须包含所有词，顺序不限 |
 | 问答 | `ask` | 只运行端点配置的默认 Agent（客户端不能自选 Agent；未配置时使用内置快速问答），服务端自动建会话，返回带引用的完整回答和 `session_id`，续聊时传回即可；不开启联网搜索 |
 | Wiki | `wiki_search`、`wiki_read_page`、`wiki_index` | 只对开启了 Wiki 的知识库生效；`wiki_search` 的 `query` 保持原有的正则语义（大小写不敏感），不是合法正则的文本按字面匹配；`regex=false` 强制字面匹配，`regex=true` 要求合法正则 |
 | 写入 | `add_document`、`update_document`、`delete_document` | 默认关闭；支持 Markdown 文本或 URL 导入 |
+
+`search_knowledge` 可通过可选的 `knowledge_ids` 字符串数组限定文档范围，三种 `mode` 均支持。先用 `list_documents` 或搜索结果取得真实文档 ID，再传入这些 ID；文档过滤在召回和候选数截断之前生效，同库其他文档不会参与此次检索。省略该参数时沿用整库检索。传入时数组必须非空，且不能包含空白 ID；ID 两端空白会被去除，重复 ID 自动去重。
+
+若同时传入 `knowledge_base_ids`，每个文档都必须属于所选知识库；仅检索这些文档，不会额外搜索所选库里的其他文档。不存在的文档、越权文档、与知识库选择冲突的文档或没有向量/关键词索引的文档都会返回错误，整次调用不会退回整库检索。共享知识库沿用端点授权和所属空间校验。
+
+例如，假设 `list_documents` 已返回 `doc-a` 和 `doc-b`，`tools/call` 的参数可以写为：
+
+```json
+{
+  "name": "search_knowledge",
+  "arguments": {
+    "query": "合同价格",
+    "mode": "hybrid",
+    "knowledge_ids": ["doc-a", "doc-b"],
+    "limit": 10
+  }
+}
+```
+
+`search_knowledge` 的结构化结果 `results[].chunk_type` 和文本结果的 `chunk_type` 属性保留命中片段的原始类型，例如 `text`、`summary`、`image_ocr`、`image_caption` 或 `image_vector`。空字符串表示类型未知，不能据此认定为原文；客户端可据类型决定是否补读文档正文。
 
 现有 MCP 工具的返回结果会复用 REST/IM 的资源链接转换：正文、Wiki 内容以及结构化数据中的图片引用，都会在权限校验后转换为可直接访问的 HTTP(S) 链接，不需要新增工具或修改端点工具清单。`ask` 的 `references[].images` 保留图片 URL、caption 和 OCR 文本，文本引用列表也包含图片链接，避免正文摘要截断后丢失图片信息。
 
@@ -59,20 +81,22 @@ MCP 管理页支持按服务名称和卡片显示的用途说明搜索。搜索�
 
 生成链接前会重新检查端点知识库范围、共享权限、资源所属空间和有效文档绑定，沿用知识库图片预览的权限规则；未限定知识库的端点按调用者可查看的知识库判断，因此 `ask` 通过智能体检索到的共享知识库图片同样可以转换；原始上传文件不会因为出现在结果文本中就获得下载链接。已有绑定的历史存储路径可以转换。对于缺少图片绑定的历史文档，需要由有权限的管理员重新解析文档，完成后重新检索；不能仅凭可编辑的正文或 `image_info` 自动补授文件权限。
 
+`read_document` 的 `offset` 是文档阅读顺序中从 0 开始的位置，不是 chunk index。无 `query` 时，`limit` 默认 20、最多 100，输出预算可能减少每页片段数。`query` 模式不使用 `limit`，每次最多返回 20 个匹配，并附加每个匹配前后各一个分块作为上下文，重叠上下文会去重，且受输出预算限制。返回 `truncated=true` 时，用响应中的 `next_offset` 作为下一次的 `offset`，并保留原 `query` 继续读取。
+
 > **`grep_chunks` 的召回有上限。** 它基于索引取候选，每次最多 30 条，再用正则筛选，所以返回的每条都匹配模式，但不保证穷尽：库里存在的匹配也可能没进候选池。容易漏的情况有三类：`foo.*bar` 这类组合模式，候选按 foo、bar 的相关度排序，真正相邻出现的分块可能排不进前 30；`C++` 这类几乎只剩符号的模式，抽出的字面词只有 `C`，在索引里几乎没有区分度；没有关键词索引的库改用语义索引取候选，字面匹配更依赖运气。旧实现对 chunks 表做全表正则扫描，能保证"有就能找到"，但数据量大时代价过高，已经移除。需要在某篇文档里穷尽查找时，用 `read_document` 的 `query`，它会顺序扫完整篇文档。
 
 工具实现直接复用 Agent 的原生工具（`internal/agent/tools/`），鉴权复用 API Key 的作用域模型：端点被换算成一把仅含 retrieve / chat / ingest 等能力、限定知识库范围的作用域，所以后端各服务对它的检查与对受限 API Key 完全一致。实现细节见下方内置 MCP Server 参考。
 
 ## 接入方式对照 {#两个方向的对照速览}
 
-| 维度 | HelmsKB 作为 MCP 客户端 | HelmsKB 作为 MCP Server |
+| 维度 | WeKnora 作为 MCP 客户端 | WeKnora 作为 MCP Server |
 |---|---|---|
 | 代码位置 | `internal/mcp/` + handler/service/repository + `internal/agent/tools/` | `internal/mcpserver/` + `internal/middleware/mcp_endpoint_auth.go` + `internal/handler/mcp_endpoint.go` |
 | 协议库 | `github.com/mark3labs/mcp-go`（client） | `github.com/mark3labs/mcp-go`（server，Streamable HTTP，无状态模式） |
-| 传输 | SSE、Streamable HTTP（stdio 因安全禁用） | Streamable HTTP；stdio 客户端用 `mcp-remote` 桥接 |
+| 传输 | SSE、Streamable HTTP（stdio 因安全禁用） | Streamable HTTP；无法使用原生 HTTP/Bearer 时，可用 `mcp-remote@0.15.1` 作为 STDIO 备用配置 |
 | 认证 | API Key / Bearer / OAuth 2.0（DCR + PKCE，token AES 加密、按 principal 隔离） | 入站 `Authorization: Bearer mcp_…`，每个端点独立令牌（SHA-256 存储，可轮换） |
 | 安全控制 | 工具级人工审批、SSRF 校验、不可信输出前缀、DTO 级密钥隔离 | 端点级工具白名单（列表与调用双重校验）、知识库范围、每分钟限流、令牌只展示一次 |
-| 消费者 | HelmsKB Agent（对话中自动调用） | Claude Desktop / Cursor / Claude Code / VS Code Copilot 等任意 MCP 客户端 |
+| 消费者 | WeKnora Agent（对话中自动调用） | Claude Desktop / Cursor / Claude Code / VS Code Copilot 等任意 MCP 客户端 |
 
 ## 配置与实现参考
 
@@ -233,7 +257,7 @@ PUT body 中字段为指针语义：**缺省 = 保留原值**，**空字符串 =
 
 #### OAuth 2.0 授权全流程 {#_1-6-oauth-2-0-授权全流程}
 
-当 MCP server 要求 OAuth（`auth_type: "oauth"`）时，HelmsKB 实现了完整的授权码流程：**RFC 9728 / RFC 8414 发现 → RFC 7591 动态客户端注册 → Authorization Code + PKCE → token 加密持久化 → 带分布式租约的自动刷新**。token 按 `(tenant_id, principal_type, principal_id, service_id)` 维度隔离——同一服务，每个用户（或 embed 访客、IM 用户等 principal，见 `internal/types/principal.go`）都持有自己的 token。
+当 MCP server 要求 OAuth（`auth_type: "oauth"`）时，WeKnora 实现了完整的授权码流程：**RFC 9728 / RFC 8414 发现 → RFC 7591 动态客户端注册 → Authorization Code + PKCE → token 加密持久化 → 带分布式租约的自动刷新**。token 按 `(tenant_id, principal_type, principal_id, service_id)` 维度隔离——同一服务，每个用户（或 embed 访客、IM 用户等 principal，见 `internal/types/principal.go`）都持有自己的 token。
 
 ##### 授权时序
 
@@ -241,8 +265,8 @@ PUT body 中字段为指针语义：**缺省 = 保留原值**，**空字符串 =
 sequenceDiagram
     autonumber
     participant B as "用户浏览器"
-    participant FE as "HelmsKB 前端"
-    participant BE as "HelmsKB 后端（OAuthManager）"
+    participant FE as "WeKnora 前端"
+    participant BE as "WeKnora 后端（OAuthManager）"
     participant ST as "State 存储（Redis / 内存，TTL 10 分钟）"
     participant AS as "OAuth 授权服务器"
     participant DB as "PostgreSQL（mcp_oauth_clients / mcp_oauth_tokens）"
@@ -250,7 +274,7 @@ sequenceDiagram
     FE->>BE: "POST /mcp-services/{id}/oauth/authorize-url<br/>{redirect_uri, frontend_redirect}"
     BE->>AS: "元数据发现（AuthServerMetadataURL 或按 RFC 9728/8414 自动发现）"
     alt "该服务尚无已注册客户端"
-        BE->>AS: "RFC 7591 动态客户端注册（client_name = HelmsKB）"
+        BE->>AS: "RFC 7591 动态客户端注册（client_name = WeKnora）"
         AS-->>BE: "client_id（可含 client_secret）"
         BE->>DB: "SaveClient：按（tenant, service）持久化，secret AES 加密"
     end
@@ -288,7 +312,7 @@ sequenceDiagram
 `internal/mcp/oauth_tokenstore.go` 提供两层 TokenStore：
 
 - `dbTokenStore`：实现 mcp-go 的 `transport.TokenStore`，授权/刷新成功后由 mcp-go 回调 `SaveToken` 落库（缺省 `TokenType` 补 `Bearer`，`ExpiresIn` 换算成 `ExpiresAt`）。
-- `managedTokenStore`：运行时传输实际使用的包装——**`GetToken` 抹掉 `ExpiresAt`**，让 mcp-go 永远认为 token 未过期，从而禁用依赖库自身的自动刷新；刷新决策完全收归 HelmsKB 的协调生命周期（否则会绕过跨实例租约，并把刷新失败折叠成笼统的 authorization-required）。
+- `managedTokenStore`：运行时传输实际使用的包装——**`GetToken` 抹掉 `ExpiresAt`**，让 mcp-go 永远认为 token 未过期，从而禁用依赖库自身的自动刷新；刷新决策完全收归 WeKnora 的协调生命周期（否则会绕过跨实例租约，并把刷新失败折叠成笼统的 authorization-required）。
 
 ##### Token 刷新与跨实例租约（oauth_lifecycle.go）
 
@@ -343,6 +367,12 @@ Agent 启动时由 `internal/application/service/agent_service.go` 按 Agent 配
 函数名使用服务 ID 和原始工具名的稳定哈希后缀避免清洗后的碰撞；引用绑定具体 schema，定义变化后需重新读取。Schema 校验不访问外部 URL 或文件，审批修改后的参数也会校验。服务说明与工具结果按外部数据处理，不具有覆盖用户请求或扩大权限的效力。
 
 Mention 只是优先选择，不改变 Agent 的 `all / selected / none` 范围。全量函数暴露保留为兼容路径，不是生产默认。
+
+##### 工具调用失败与重试
+
+远端工具可能已经执行操作，但响应在网络中丢失，或服务端在操作完成后返回错误。此时 WeKnora 会提示执行结果不确定，在同一次调用中不自动重复提交工具。请先在远端系统核实操作是否已完成，再决定是否重新调用；新调用仍按原有工具审批策略处理。
+
+客户端尚未连接，或服务端因会话失效返回 HTTP 404 时，保留最多一次重连重试；请求取消后不发起该重试。OAuth 401 的刷新和重试仍按原有授权流程处理。
 
 ##### 持久目录的管理 {#mcp-tool-directory}
 
@@ -411,7 +441,7 @@ flowchart LR
 
 调用白名单以外的工具返回 JSON-RPC `-32602`，工具不会执行；这与旧 SDK 返回工具结果 `isError=true` 的错误形状不同。知识库越权仍由原有作用域检查拒绝。
 
-HelmsKB 调用外部 MCP 服务时，由 `mcp-go v1.1.1` 按每个对端独立自动协商：先尝试新版发现，失败后尝试 legacy 初始化。忽略发现请求的旧服务最多增加约 5 秒探测等待；401/503 等探测失败也会尝试 legacy 初始化，两次失败则返回初始化错误。父请求取消或超时不会被标记为初始化成功。该协商不取决于调用 HelmsKB 的客户端所用版本。
+WeKnora 调用外部 MCP 服务时，由 `mcp-go v1.1.1` 按每个对端独立自动协商：先尝试新版发现，失败后尝试 legacy 初始化。忽略发现请求的旧服务最多增加约 5 秒探测等待；401/503 等探测失败也会尝试 legacy 初始化，两次失败则返回初始化错误。父请求取消或超时不会被标记为初始化成功。该协商不取决于调用 WeKnora 的客户端所用版本。
 
 外部工具目录保留完整 JSON Schema；新版工具调用会按 schema 的 `x-mcp-header` 标注生成 `Mcp-Param-*` 请求头。目录刷新失败时不会用部分结果替换上一次完整目录的参数头定义，断开连接时清除这些定义。
 
@@ -488,7 +518,7 @@ claude mcp add --transport http weknora-docs https://your-weknora.example.com/mc
 :::
 
 
-`mcp-server/` 是一个独立的 Python 包，PyPI 名 **`tencent-weknora-mcp`**（当前 1.1.1，Python ≥ 3.10，依赖 `mcp>=2,<3`、`requests>=2.31.0`、`starlette`、`uvicorn`），核心实现在 `mcp-server/weknora_mcp_server.py`：`WeKnoraClient` 用 `requests.Session` 携带 `X-API-Key` 调 HelmsKB REST API，`MCPServer("weknora-server", version="1.1.1")` 注册工具并通过所选传输对外服务。
+`mcp-server/` 是一个独立的 Python 包，PyPI 名 **`tencent-weknora-mcp`**（当前 1.1.1，Python ≥ 3.10，依赖 `mcp>=2,<3`、`requests>=2.31.0`、`starlette`、`uvicorn`），核心实现在 `mcp-server/weknora_mcp_server.py`：`WeKnoraClient` 用 `requests.Session` 携带 `X-API-Key` 调 WeKnora REST API，`MCPServer("weknora-server", version="1.1.1")` 注册工具并通过所选传输对外服务。
 
 ::: warning 包名与 API 变更（v1.1.x）
 - 官方包名是 `tencent-weknora-mcp`（由 Tencent/WeKnora 通过 Trusted Publishing 发布）；社区早期的 `weknora-mcp` 已不再使用。命令行入口仍是 `weknora-mcp-server` / `weknora-server`。
@@ -550,7 +580,7 @@ stdio 传输把 stdout 当作协议通道，任何多余的 `print` 都会污染
 
 | 环境变量 | 默认值 | 说明 |
 |---|---|---|
-| `WEKNORA_BASE_URL` | `http://localhost:8080/api/v1` | HelmsKB API 基础 URL |
+| `WEKNORA_BASE_URL` | `http://localhost:8080/api/v1` | WeKnora API 基础 URL |
 | `WEKNORA_API_KEY` | 空 | 租户 API Key，以 `X-API-Key` header 发送 |
 | `WEKNORA_CHAT_TIMEOUT` | `300` | chat / agent_chat 的 SSE 读超时（秒），非法值回退 300 |
 | `WEKNORA_VERIFY_SSL` | `true` | 设为 `false` 关闭 SSL 证书校验（仅限自签名证书的开发环境） |
@@ -689,7 +719,7 @@ stdio 传输（Claude Desktop 的 `claude_desktop_config.json`）：
 
 远程部署（Docker / `--transport http`）时，客户端连接 `http://<host>:8000/mcp` 并携带 `Authorization: Bearer <MCP_SERVER_AUTH_TOKEN>`。
 
-顺带一提：HelmsKB 主程序（第一部分）也可以作为 MCP 客户端接入这个 mcp-server——在「工具箱 → MCP服务」中新建 Streamable HTTP 服务指向 `/mcp` 端点，认证方式选「API Key / Token」，请求头名称填 `Authorization`，密钥值填 `Bearer <MCP_SERVER_AUTH_TOKEN>` 即可，从而让 HelmsKB Agent 操作另一套 HelmsKB 实例。
+顺带一提：WeKnora 主程序（第一部分）也可以作为 MCP 客户端接入这个 mcp-server——在「工具箱 → MCP服务」中新建 Streamable HTTP 服务指向 `/mcp` 端点，认证方式选「API Key / Token」，请求头名称填 `Authorization`，密钥值填 `Bearer <MCP_SERVER_AUTH_TOKEN>` 即可，从而让 WeKnora Agent 操作另一套 WeKnora 实例。
 
 #### 文件上传路径安全（upload_paths.py） {#_2-6-文件上传路径安全-upload-paths-py}
 
