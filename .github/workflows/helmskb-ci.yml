@@ -22,6 +22,7 @@ jobs:
       - run: npm test --prefix helmskb/build
       - run: node helmskb/build/prepare.mjs
       - run: node helmskb/build/build-web.mjs
+      - run: node helmskb/build/verify-frontend.mjs
       - run: git diff --exit-code
   backend:
     runs-on: ubuntu-latest

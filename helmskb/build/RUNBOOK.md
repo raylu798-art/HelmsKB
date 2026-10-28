@@ -18,6 +18,8 @@ docker compose -p p006-helmskb-test --env-file .env -f compose.yaml stop
 
 镜像回退：使用记录的上一 image ID 重建 app/frontend，保留卷；仅在数据库仍兼容时采用，并核对实际镜像和健康。
 
+覆盖候选镜像标签前，先执行 `node helmskb/build/retain-images.mjs p006-helmskb-test`，将输出保存在私有运行目录。脚本为当前实际 app/frontend/docreader 镜像建立独立保留标签并核对 ID。只有记录摘要而未保留镜像，不能保证本地 containerd 仍能找到旧清单。发行产物使用不可变标签或仓库摘要；保留标签与备份随验收记录一起管理。
+
 数据库恢复：先停止写入，在独立命名恢复库执行 pg_restore，检查迁移、合成资料和行数；必要时恢复匹配上传卷及配置，再切换镜像。不能以切旧代码代替数据库恢复。
 
 备份、模型设置和测试账号仅保存在私有目录。验收写明环境、时间、来源和实测结果。任务演练后禁用。本阶段不配置自动同步、自动备份或后台巡检。
