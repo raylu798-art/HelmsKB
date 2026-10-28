@@ -9,6 +9,7 @@ export const ownership=JSON.parse(fs.readFileSync(path.join(root,'helmskb/build/
 export function git(args,cwd=root){return execFileSync('git',args,{cwd,maxBuffer:64*1024*1024})}
 export function owned(file){return ownership.ownedFiles.includes(file)||ownership.ownedPrefixes.some(p=>file.startsWith(p))}
 export function checkBoundary(){
+  git(['merge-base','--is-ancestor',lock.commit,'HEAD']);
   const changed=[...new Set([...git(['diff','--name-only','-z',lock.commit]).toString().split('\0'),...git(['ls-files','--others','--exclude-standard','-z']).toString().split('\0')].filter(Boolean))];
   const forbidden=[];
   for(const file of changed){

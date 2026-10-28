@@ -21,9 +21,10 @@ foreach($baseline in @(118,120)){
 INSERT INTO tenants(id,name,description,business) VALUES(606000,'HelmsKB synthetic upgrade fixture','P006/test only','test');
 INSERT INTO knowledge_bases(id,tenant_id,name,embedding_model_id,summary_model_id) VALUES('60000000-0000-0000-0000-000000000001',606000,'Synthetic migration knowledge','','');
 INSERT INTO knowledges(id,tenant_id,knowledge_base_id,type,title,source,parse_status) VALUES('60000000-0000-0000-0000-000000000002',606000,'60000000-0000-0000-0000-000000000001','manual','P006 synthetic procedure','synthetic','completed');
+INSERT INTO chunks(id,tenant_id,knowledge_base_id,knowledge_id,content,chunk_index,start_at,end_at) VALUES('60000000-0000-0000-0000-000000000003',606000,'60000000-0000-0000-0000-000000000001','60000000-0000-0000-0000-000000000002','HelmsKB synthetic procedure: the test entry is 8096. Image rollback and database recovery are separate operations.',0,0,112);
 '@
  Sql $database $seed|Out-Null
- $query="SELECT md5(string_agg(id||title||source,',' ORDER BY id)) FROM knowledges WHERE tenant_id=606000"
+ $query="SELECT md5((SELECT string_agg(id||title||source,',' ORDER BY id) FROM knowledges WHERE tenant_id=606000)||(SELECT string_agg(id||content,',' ORDER BY id) FROM chunks WHERE tenant_id=606000))"
  $before=Sql $database $query
  $backup="/tmp/p006-upgrade${baseline}-$run.dump"
  Docker @('exec',$postgres,'pg_dump','-U','p006_test','-Fc','-f',$backup,$database)|Out-Null

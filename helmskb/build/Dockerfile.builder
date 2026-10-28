@@ -6,5 +6,5 @@ COPY --from=rust /usr/local/rustup /usr/local/rustup
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
 COPY --from=node /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
 ENV RUSTUP_HOME=/usr/local/rustup CARGO_HOME=/usr/local/cargo PATH=/usr/local/cargo/bin:$PATH GOMAXPROCS=2 CARGO_BUILD_JOBS=2 GOSUMDB=sum.golang.org
-RUN apt-get update && apt-get install -y --no-install-recommends libsqlite3-dev python3 ca-certificates curl git make build-essential pkg-config cmake && rm -rf /var/lib/apt/lists/* && ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+RUN apt-get update && apt-get install -y --no-install-recommends libsqlite3-dev python3 python3-venv ca-certificates curl git make build-essential pkg-config cmake && rm -rf /var/lib/apt/lists/* && ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && rustup toolchain install 1.99.1 --profile minimal
 WORKDIR /src
