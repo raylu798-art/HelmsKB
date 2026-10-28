@@ -29,6 +29,7 @@ services:
     mem_limit: 256m
     restart: unless-stopped
   docreader:
+    init: true
     image: ${DOCREADER_IMAGE:?Pin same-source DocReader image ID}
     container_name: p006-helmskb-test-docreader
     volumes: [docreader-tmp:/tmp/docreader]
@@ -42,6 +43,7 @@ services:
     mem_limit: 1500m
     restart: unless-stopped
   app:
+    init: true
     image: ${APP_IMAGE:?Pin same-source app image ID}
     container_name: p006-helmskb-test-app
     env_file: .env

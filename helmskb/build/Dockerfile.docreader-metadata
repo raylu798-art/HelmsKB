@@ -1,0 +1,7 @@
+ARG DOCREADER_IMAGE
+FROM ${DOCREADER_IMAGE}
+ARG SOURCE_COMMIT
+ARG UPSTREAM_COMMIT
+ARG BRAND_HASH
+LABEL org.opencontainers.image.title="HelmsKB DocReader" org.opencontainers.image.version="0.1.0-rc.1" org.opencontainers.image.revision=$SOURCE_COMMIT io.helmskb.upstream-revision=$UPSTREAM_COMMIT io.helmskb.brand-sha256=$BRAND_HASH
+COPY helmskb-build.json /app/helmskb-build.json

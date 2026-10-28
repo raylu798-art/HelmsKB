@@ -21,3 +21,13 @@ node helmskb/build/boundary.mjs 检查原始树差异；允许范围由 ownershi
 P006/test 绑定 127.0.0.1:8096，使用独立网络、卷、数据库用户、Redis 和密钥。实际配置与备份在项目私有运行目录；不得复制 P005 凭据或资料，不修改全局 Ollama 默认上下文。模型配置需记录实际加载参数。
 
 完整启动、升级和恢复见 [运行手册](helmskb/build/RUNBOOK.md)。
+
+## 当前候选的运行层装配
+
+候选核心产物来源为 5f9912f01a912a2f6c5e5e387879f80a5c8b1f7e；后续构建工具和验证记录可以继续提交，不能把新的源码 HEAD 冒充已部署来源。镜像额外记录 packaging revision。
+
+Dockerfile.app-shared-runtime 可复用本次从锁定上游源码完整构建的 DocReader OS/依赖层，补齐 Node24、数据库客户端、gosu、FFmpeg 和 qpdf。构建前必须核对 DOCREADER_IMAGE 的上游 SHA 与 upstream.lock.json 一致。该方式共用当前版本的底层依赖层，避免重复下载；不允许输入旧版应用镜像。Dockerfile.app-runtime 保留独立 Debian 运行层的构建方式。
+
+原始 DocReader 先按 docker/Dockerfile.docreader 和 docreader/uv.lock 构建，再使用 Dockerfile.docreader-metadata 添加发行来源清单。前端、Go、迁移和两种运行层均按同一上游 SHA 校验。
+
+本机完整 service 单元套件因大量 SQLite 临时库触发默认 10 分钟总超时；同源 GitHub CI 已通过。Python venv 环境缺失已补齐并复测失败用例，不得把本机超时记为通过。后续在构建容器中可把测试临时目录置于可执行 tmpfs，并令 GOTMPDIR 使用独立磁盘目录，避免编译中间文件占满 tmpfs。
