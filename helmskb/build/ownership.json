@@ -12,7 +12,7 @@
     "internal/productdocs/markdown.go", "internal/productdocs/library.go", "internal/agent/tools/operations.go", "internal/agent/tools/product_docs.go",
     "config/builtin_agents.yaml", "config/prompt_templates/agent_system_prompt.yaml"
   ],
-  "stagedGeneratedPrefixes": ["frontend/public/brand/", "website-docs/public/brand/"],
+  "stagedGeneratedPrefixes": ["frontend/public/brand/", "website-docs/public/brand/", "website-docs/.vitepress/theme/helmskb/"],
   "stagedGeneratedFiles": ["frontend/public/favicon.ico", "website-docs/public/favicon.ico", "frontend/public/helmskb-build.json", "website-docs/public/screenshots/introduction-overview.png", "website-docs/public/screenshots/quickstart-register.png", "website-docs/public/screenshots/quickstart-chat.png", "website-docs/public/screenshots/chat-references-drawer.png"],
   "stagedMarkdownPrefix": "website-docs/"
 }

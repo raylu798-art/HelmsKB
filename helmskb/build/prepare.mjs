@@ -61,8 +61,11 @@ export async function prepare({allowDirty=false}={}){
     return replaceExact(s,'<span class="wk-logo"><img :src="`${homeAssets}/brand/weknora-original.png`" alt="WeKnora" width="945" height="650"></span>',`<span class="helmskb-docs-logo" style="display:inline-flex;align-items:center;width:190px;height:44px"><img :src="isDark ? '/docs/brand/helmskb-logo-reversed.svg' : '/docs/brand/helmskb-logo.svg'" alt="${brand.name}" style="width:100%;height:auto;position:static;transform:none;filter:none"></span>`);
   });
   edit('website-docs/shared/header.ts',s=>replaceExact(s,'https://github.com/Tencent/WeKnora',brand.repository));
+  const docsBrandModules=path.join(stage,'website-docs/.vitepress/theme/helmskb');
+  fs.mkdirSync(docsBrandModules,{recursive:true});
+  for(const file of ['DocumentBrandOverlay.vue','screenshot-manifest.json'])fs.copyFileSync(path.join(root,'helmskb/branding',file),path.join(docsBrandModules,file));
   edit('website-docs/.vitepress/theme/Screenshot.vue',s=>{
-    s=replaceExact(s,"import { useData, withBase } from 'vitepress'","import { useData, withBase } from 'vitepress'\nimport DocumentBrandOverlay from '../../../helmskb/branding/DocumentBrandOverlay.vue'\nimport screenshotBranding from '../../../helmskb/branding/screenshot-manifest.json'");
+    s=replaceExact(s,"import { useData, withBase } from 'vitepress'","import { useData, withBase } from 'vitepress'\nimport DocumentBrandOverlay from './helmskb/DocumentBrandOverlay.vue'\nimport screenshotBranding from './helmskb/screenshot-manifest.json'");
     s=replaceExact(s,"const failed = ref(false)","const screenshotRegions = computed(() => (screenshotBranding.assets as Record<string, {regions?: any[]}>)[props.src]?.regions || [])\nconst failed = ref(false)");
     return replaceExact(s,'    </div>\n    <figcaption class="wk-shot-caption">','      <DocumentBrandOverlay v-if="size && !failed" :regions="screenshotRegions" :logo="withBase(\'/brand/helmskb-logo.svg\')" />\n    </div>\n    <figcaption class="wk-shot-caption">');
   });
