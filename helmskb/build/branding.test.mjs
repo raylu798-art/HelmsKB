@@ -5,6 +5,7 @@ import { parse } from 'yaml';
 import { brandProse,brandMessages } from '../branding/prose.mjs';
 import { transformMarkdown,executableFences,transformYaml,replaceExact,normalizeRegistry } from './transform.mjs';
 import { checkBoundary } from './boundary.mjs';
+import { introductionIdentity,openSourceNotice } from '../branding/documentation.mjs';
 const brand=JSON.parse(fs.readFileSync(new URL('../branding/brand.json',import.meta.url)));
 
 test('only product display text changes; vendors, URLs, code, attribution and identifiers retain identity',()=>{
@@ -20,6 +21,16 @@ test('documentation retains executable fences, original anchors, link targets an
  assert.match(after,/# HelmsKB 产品介绍 \{#weknora-产品介绍\}/);
  assert.ok(after.includes('[说明](./WeKnora.md) `WeKnora`'));
  assert.deepEqual(executableFences(after),executableFences(before));
+});
+test('product introduction uses HelmsKB while attribution lives in a dedicated notice',()=>{
+ const raw=fs.readFileSync(new URL('../../website-docs/01-getting-started/01-introduction.md',import.meta.url),'utf8');
+ const output=transformMarkdown(replaceExact(raw,introductionIdentity.before,introductionIdentity.after),brand);
+ assert.ok(output.includes('HelmsKB 是面向企业的知识库问答平台'));
+ assert.doesNotMatch(output,/WeKnora|维娜拉/);
+ assert.ok(output.includes('{#weknora-产品介绍}'));
+ assert.deepEqual(executableFences(output),executableFences(raw));
+ assert.match(openSourceNotice,/基于腾讯开源项目 \[WeKnora\]/);
+ assert.match(openSourceNotice,/© Tencent WeKnora/);
 });
 test('structured YAML branding leaves IDs, tools, model settings and selection rules untouched',()=>{
  const before='builtin_agents:\n  - id: builtin-weknora-assistant\n    name: WeKnora Assistant\n    config:\n      system_prompt_id: weknora_assistant\n      max_iterations: 30\n      allowed_tools: [read_weknora_doc]\n';

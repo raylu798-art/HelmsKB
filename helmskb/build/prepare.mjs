@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { root,lock,ownership,git,checkBoundary } from './boundary.mjs';
 import { transformMarkdown,executableFences,transformYaml,replaceExact,normalizeRegistry } from './transform.mjs';
+import { introductionIdentity,openSourceNotice } from '../branding/documentation.mjs';
 
 export const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const brand=JSON.parse(fs.readFileSync(path.join(root,'helmskb/branding/brand.json'),'utf8'));
@@ -52,7 +53,9 @@ export async function prepare({allowDirty=false}={}){
     s=replaceExact(s,"titleTemplate: ':title · WeKnora 文档'",`titleTemplate: ':title · ${brand.name} 文档'`);
     s=replaceExact(s,"siteTitle: 'WeKnora'",`siteTitle: '${brand.name}'`);
     s=replaceExact(s,"content: 'WeKnora 文档'",`content: '${brand.name} 文档'`);
-    s=replaceExact(s,"description: 'WeKnora（维娜拉）官方文档：部署、配置、功能说明、API 参考与二次开发'",`description: '${brand.sourceNotice}'`);
+    s=replaceExact(s,"description: 'WeKnora（维娜拉）官方文档：部署、配置、功能说明、API 参考与二次开发'",`description: '${brand.name} 文档：部署、配置、功能说明、API 参考与二次开发'`);
+    s=replaceExact(s,'message: `基于 WeKnora ${repoVersionLabel} 源码整理 · MIT License`',`message: '<a href="${brand.docsBase}06-development/99-open-source">开源声明与许可证</a>'`);
+    s=replaceExact(s,"copyright: '© Tencent WeKnora'",`copyright: '${brand.name} 文档'`);
     s=replaceExact(s,'lastUpdated: true','lastUpdated: false');
     return replaceExact(s,"const heading = raw.match(/^#\\s+(.+)$/m)?.[1] ?? file.replace(/\\.md$/, '')","const heading = (raw.match(/^#\\s+(.+)$/m)?.[1] ?? file.replace(/\\.md$/, '')).replace(/\\s*\\{#[^}]+\\}\\s*$/, '')");
   });
@@ -76,11 +79,16 @@ export async function prepare({allowDirty=false}={}){
   edit('internal/agent/tools/product_docs.go',s=>s.replaceAll('WeKnora documentation',brand.name+' documentation').replaceAll('about WeKnora itself','about '+brand.name+' itself'));
   for(const file of ['config/builtin_agents.yaml','config/prompt_templates/agent_system_prompt.yaml'])edit(file,s=>transformYaml(s,brand,{requireAssistantPolicy:file==='config/prompt_templates/agent_system_prompt.yaml'}));
   const docs=files.filter(f=>/^website-docs\/(?:0[1-7]-[^/]+|sample-data)\/.*\.md$/.test(f));
-  for(const file of docs){const before=fs.readFileSync(path.join(stage,file),'utf8');let after=transformMarkdown(before,brand);
-    if(file==='website-docs/01-getting-started/01-introduction.md')after=after.replace(/^(# .+\n)/,`$1\n> ${brand.sourceNotice}\n`);
+  for(const file of docs){const before=fs.readFileSync(path.join(stage,file),'utf8');
+    const prose=file==='website-docs/01-getting-started/01-introduction.md'?replaceExact(before,introductionIdentity.before,introductionIdentity.after):before;
+    const after=transformMarkdown(prose,brand);
     if(JSON.stringify(executableFences(before))!==JSON.stringify(executableFences(after)))throw Error('Executable documentation changed: '+file);
     if(after!==before){fs.writeFileSync(path.join(stage,file),after);report.push({path:file,before:hash(before),after:hash(after),executableFencesPreserved:true})}
   }
+  const noticeFile=path.join(stage,'website-docs/06-development/99-open-source.md');
+  if(fs.existsSync(noticeFile))throw Error('Upstream document conflicts with the generated open-source notice');
+  fs.writeFileSync(noticeFile,openSourceNotice);
+  report.push({path:'website-docs/06-development/99-open-source.md',before:null,after:hash(openSourceNotice),type:'dedicated-source-and-license-notice'});
   for(const directory of ['frontend/public','website-docs/public']){
     fs.mkdirSync(path.join(stage,directory,'brand'),{recursive:true});
     for(const file of fs.readdirSync(path.join(root,'helmskb/branding/assets'))){
