@@ -109,7 +109,7 @@
       "height": 2110,
       "regions": [],
       "replacement": "introduction-overview.png",
-      "replacementSha256": "4af07f7ec25015468ce77710be1e2ab94e60ca49a8f64447cd554720502ebe5b",
+      "replacementSha256": "c74ad05fdc1d27a40f89aa0603d376b31fc3007c85dd9fdf18fb920bd4b80adb",
       "review": "Real P006/test browser capture; synthetic demonstration account and data."
     },
     "/screenshots/chat-save-answer-editor.png": {
@@ -319,7 +319,7 @@
       "height": 2112,
       "regions": [],
       "replacement": "introduction-overview.png",
-      "replacementSha256": "4af07f7ec25015468ce77710be1e2ab94e60ca49a8f64447cd554720502ebe5b",
+      "replacementSha256": "c74ad05fdc1d27a40f89aa0603d376b31fc3007c85dd9fdf18fb920bd4b80adb",
       "review": "Real P006/test browser capture; synthetic demonstration account and data."
     },
     "/screenshots/kb-activity.png": {
@@ -597,7 +597,7 @@
       "height": 2112,
       "regions": [],
       "replacement": "introduction-overview.png",
-      "replacementSha256": "4af07f7ec25015468ce77710be1e2ab94e60ca49a8f64447cd554720502ebe5b",
+      "replacementSha256": "c74ad05fdc1d27a40f89aa0603d376b31fc3007c85dd9fdf18fb920bd4b80adb",
       "review": "Real P006/test browser capture; synthetic demonstration account and data."
     },
     "/screenshots/quickstart-document-list.png": {
@@ -640,7 +640,7 @@
       "height": 2112,
       "regions": [],
       "replacement": "quickstart-register.png",
-      "replacementSha256": "e567ef2635c51c46b43cdcf22df0a3bfe9b0e63bb4ed5e06d4f93429231d3271",
+      "replacementSha256": "0017e638300fb251ee67c9dbe3dab6072b37947100c2096a78bfcbbe9c5f4d3f",
       "review": "Real P006/test browser capture; synthetic demonstration account and data."
     },
     "/screenshots/quickstart-upload.png": {
