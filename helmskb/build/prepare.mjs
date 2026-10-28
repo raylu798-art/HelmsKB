@@ -43,7 +43,7 @@ export async function prepare({allowDirty=false}={}){
   edit('frontend/src/utils/docsUrl.ts',s=>replaceExact(s,"'https://weknora.weixin.qq.com/docs/'",JSON.stringify(brand.docsBase)));
   for(const file of ['frontend/index.html','frontend/embed.html'])edit(file,s=>s.replace(/<title>([^<]+)<\/title>/,(_,title)=>`<title>${title.replace('WeKnora',brand.name)}</title>`).replace(/(<meta name="description" content=")([^"]*)"/,(_,prefix,text)=>prefix+text.replace('WeKnora',brand.name)+'"'));
   edit('frontend/vite.config.ts',s=>replaceExact(s,'export default defineConfig({','export default defineConfig({\n  css: { preprocessorMaxWorkers: 0 },'));
-  edit('frontend/nginx.conf',s=>replaceExact(s,'    # Static widget loader for third-party sites','    location ^~ /docs/ {\n        root /usr/share/nginx/html;\n        try_files $uri $uri.html $uri/ =404;\n    }\n\n    # Static widget loader for third-party sites'));
+  edit('frontend/nginx.conf',s=>replaceExact(s,'    # Static widget loader for third-party sites','    location ^~ /docs/ {\n        root /usr/share/nginx/html;\n        add_header Cache-Control "no-cache, must-revalidate" always;\n        try_files $uri $uri.html $uri/ =404;\n    }\n\n    # Static widget loader for third-party sites'));
   for(const file of ['frontend/package.json','frontend/package-lock.json'])edit(file,s=>{const j=normalizeRegistry(JSON.parse(s));j.version=lock.distributionVersion;if(j.packages?.[''])j.packages[''].version=lock.distributionVersion;return JSON.stringify(j,null,2)+'\n'});
   edit('website-docs/package-lock.json',s=>JSON.stringify(normalizeRegistry(JSON.parse(s)),null,2)+'\n');
   edit('website-docs/.vitepress/config.mts',s=>{
@@ -67,6 +67,7 @@ export async function prepare({allowDirty=false}={}){
   edit('website-docs/.vitepress/theme/Screenshot.vue',s=>{
     s=replaceExact(s,"import { useData, withBase } from 'vitepress'","import { useData, withBase } from 'vitepress'\nimport DocumentBrandOverlay from './helmskb/DocumentBrandOverlay.vue'\nimport screenshotBranding from './helmskb/screenshot-manifest.json'");
     s=replaceExact(s,"const failed = ref(false)","const screenshotRegions = computed(() => (screenshotBranding.assets as Record<string, {regions?: any[]}>)[props.src]?.regions || [])\nconst failed = ref(false)");
+    s=replaceExact(s,'const resolved = computed(() => withBase(props.src))',"const resolved = computed(() => { const capture = (screenshotBranding.assets as Record<string, {replacementSha256?: string}>)[props.src]; return withBase(props.src) + (capture?.replacementSha256 ? '?v=' + capture.replacementSha256.slice(0,16) : '') })");
     return replaceExact(s,'    </div>\n    <figcaption class="wk-shot-caption">','      <DocumentBrandOverlay v-if="size && !failed" :regions="screenshotRegions" :logo="withBase(\'/brand/helmskb-logo.svg\')" />\n    </div>\n    <figcaption class="wk-shot-caption">');
   });
   edit('internal/productdocs/markdown.go',s=>replaceExact(s,'const PublicBaseURL = "https://weknora.weixin.qq.com/docs/"',`const PublicBaseURL = "${brand.docsBase}"`));
