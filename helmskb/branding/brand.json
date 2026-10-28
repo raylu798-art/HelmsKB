@@ -1,12 +1,13 @@
 {
   "schemaVersion": 1,
-  "profileVersion": "1",
+  "profileVersion": "2",
   "name": "HelmsKB",
   "wordmark": {"primary": "Helms", "accent": "KB"},
   "tagline": "Enterprise Knowledge Base",
   "colors": {"text": "#0F172A", "accent": "#2563EB"},
   "repository": "https://github.com/raylu798-art/HelmsKB",
   "docsBase": "/docs/",
+  "assistantCitationPolicy": "Product documentation belongs to THIS deployment. Copy documentation URLs returned by search_weknora_docs/read_weknora_doc exactly as relative /docs/ links in Markdown. Never invent or prepend a hostname, including helmskb.com, and never call an unverified external domain the HelmsKB official site. Example: [快速上手](/docs/01-getting-started/03-quickstart). The current page origin is the only deployment origin. Preserve source attribution to `WeKnora` and third-party product names.",
   "protectedNames": ["WeKnora Cloud", "WeKnoraCloud", "WeKnora CLI", "WeKnora Skill"],
   "sourceNotice": "HelmsKB 基于腾讯开源项目 WeKnora；本技术参考随对应源码版本交付。"
 }

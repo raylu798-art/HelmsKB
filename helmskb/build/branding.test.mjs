@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import fs from 'node:fs';
+import { parse } from 'yaml';
 import { brandProse,brandMessages } from '../branding/prose.mjs';
 import { transformMarkdown,executableFences,transformYaml,replaceExact,normalizeRegistry } from './transform.mjs';
 import { checkBoundary } from './boundary.mjs';
@@ -31,3 +32,9 @@ test('registry delivery changes preserve pinned versions, integrity and non-regi
  const after=normalizeRegistry(lock);assert.equal(after.packages.a.resolved,'https://registry.npmjs.org/a/-/a-1.tgz');assert.equal(after.packages.a.integrity,lock.packages.a.integrity);assert.deepEqual(after.packages.sheet,lock.packages.sheet);assert.equal(lock.packages.a.resolved,'https://mirrors.tencent.com/npm/a/-/a-1.tgz');
 });
 test('all raw upstream business files remain outside the downstream change set',()=>assert.deepEqual(checkBoundary().unapprovedFiles,[]));
+test('assistant citations are bound to local docs without changing prompt IDs or tools',()=>{
+ const source='templates:\n  - id: weknora_assistant\n    content: You are the WeKnora Assistant.\n';
+ const result=parse(transformYaml(source,brand,{requireAssistantPolicy:true})).templates[0];
+ assert.match(result.content,/You are the HelmsKB Assistant/);assert.match(result.content,/relative \/docs\/ links/);assert.equal(result.id,'weknora_assistant');assert.match(result.content,/`WeKnora`/);
+ assert.throws(()=>transformYaml('templates: []',brand,{requireAssistantPolicy:true}),/Unknown assistant/);
+});

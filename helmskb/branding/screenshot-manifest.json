@@ -1,0 +1,950 @@
+{
+  "schemaVersion": 1,
+  "assets": {
+    "/screenshots/agent-chat.png": {
+      "sourceSha256": "8cdcfe211e10a8856dc1470210010f17e59e8fd318feb98e1ffcfec009d48ce2",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/agent-editor.png": {
+      "sourceSha256": "6fdf80dc8dee38ff5f2d90a47f965b6119ff84632fd74fbc7ea4943f9087c270",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 1.1979166666666667,
+          "y": 2.178030303030303,
+          "width": 5.416666666666667,
+          "height": 2.840909090909091,
+          "background": "#7c7c7c",
+          "brightness": 0.498,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/artifacts-library.png": {
+      "sourceSha256": "c9a25e657d327adec2d68748f63ea27c4f09ca196467f58cad58cabddc23e8f5",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/browser-connection.png": {
+      "sourceSha256": "9240735379f6d53ccebdfd7d338e76ee675dff2cd5db45d7c98f1e0767ad3643",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/chat-attachment-read.png": {
+      "sourceSha256": "a462a767cee509d9c76b9ba3dae92f0563487e2d358d734287b6bf16ad5ef46a",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.5989583333333334,
+          "y": 1.3257575757575757,
+          "width": 5.859375,
+          "height": 2.9829545454545454,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/chat-mention-selector.png": {
+      "sourceSha256": "6ba79cfd07f106e17cf3f15a34525474ddd042e93650cb60b0000c629adfb5e4",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.5989583333333334,
+          "y": 1.3257575757575757,
+          "width": 5.859375,
+          "height": 2.9829545454545454,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/chat-references-drawer.png": {
+      "sourceSha256": "18d49c93b1e34e1dafffe2204a8922668fcd943977b9395c392d1e183bd3e9a3",
+      "width": 3838,
+      "height": 2110,
+      "regions": [],
+      "replacement": "introduction-overview.png",
+      "replacementSha256": "4af07f7ec25015468ce77710be1e2ab94e60ca49a8f64447cd554720502ebe5b",
+      "review": "Real P006/test browser capture; synthetic demonstration account and data."
+    },
+    "/screenshots/chat-save-answer-editor.png": {
+      "sourceSha256": "3013de7f2430b4f285066c2f449e8f08b8e2f97f3a2aec080cf4ff7b5f223ba8",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#646464",
+          "brightness": 0.402,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/chat-source-location.png": {
+      "sourceSha256": "5e5d44eea67f3428a16501ddb57ddbe0a260565bfc6dbd0faaa878e87e79f292",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.5989583333333334,
+          "y": 1.3257575757575757,
+          "width": 5.859375,
+          "height": 2.9829545454545454,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/chat-steer-queue.png": {
+      "sourceSha256": "ec5d2041c22bd620a6f1336c0e85dc7b2024980779fa68914c4fa9c2ed3b7e47",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/chrome-extension.png": {
+      "sourceSha256": "bc3e6bde6d6d80b088dc5ed1eee64d147497751ea08779e002ee78e1bbf0343b",
+      "width": 3830,
+      "height": 2020,
+      "regions": [],
+      "review": "No application wordmark in this crop; third-party client attribution, project names and sample content retain their source identity."
+    },
+    "/screenshots/datasource-confluence-pat.png": {
+      "sourceSha256": "9c02f3e9de920ce5a179b85856919653e767cea251e43f3b7fc87a2a0425cfff",
+      "width": 1200,
+      "height": 1000,
+      "regions": [],
+      "review": "No application wordmark in this crop; third-party client attribution, project names and sample content retain their source identity."
+    },
+    "/screenshots/datasource-confluence.png": {
+      "sourceSha256": "7c385d8012870f706a9321c6a549cd39b7daff94a8d355aff489c8880ef6e115",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 1.1979166666666667,
+          "y": 2.178030303030303,
+          "width": 5.416666666666667,
+          "height": 2.840909090909091,
+          "background": "#323232",
+          "brightness": 0.201,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/datasource-seafile.png": {
+      "sourceSha256": "cbb710c3284aca2509c07af2043d04efde2b8bbbacc6335ed3b6200538fab8b2",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9114583333333334,
+          "y": 1.8465909090909092,
+          "width": 4.114583333333333,
+          "height": 2.414772727272727,
+          "background": "#323232",
+          "brightness": 0.201,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/datasource-sync.png": {
+      "sourceSha256": "258ac38fd0591a4f4d938c8a88262aee2b95353c119392ea13b7155476c6444d",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 1.1979166666666667,
+          "y": 2.178030303030303,
+          "width": 5.416666666666667,
+          "height": 2.840909090909091,
+          "background": "#323232",
+          "brightness": 0.201,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/embed-channel-preview.png": {
+      "sourceSha256": "fa363ccce62ac07ea334eaf2072c9106132b41d73ec13d74ccfc99b0aea144db",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 1.40625,
+          "y": 2.462121212121212,
+          "width": 4.739583333333333,
+          "height": 2.6041666666666665,
+          "background": "#0a0a0a",
+          "brightness": 0.04,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/embed-channel.png": {
+      "sourceSha256": "424332808b2d1f9f19fdb2a34cb28b41563c339dc31c9a6074ea3b07f33eceb0",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5885416666666667,
+          "height": 2.178030303030303,
+          "background": "#191919",
+          "brightness": 0.1,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/faq-management.png": {
+      "sourceSha256": "c916684e823e4503812a9326e591e87f5969b76d17068f53304e214f70ca2536",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/im-channels.png": {
+      "sourceSha256": "0cca0aefcb702e38b254be4da36df2ca02ea4c7a96e0a3f6ac0dbf51642f73a3",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5885416666666667,
+          "height": 2.178030303030303,
+          "background": "#191919",
+          "brightness": 0.1,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/integration-cli.png": {
+      "sourceSha256": "ac443e4882badfdc5c7661df5ecbca840a352da5a82dc122be537d7e795f51d0",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5625,
+          "height": 2.225378787878788,
+          "background": "#3e3e3e",
+          "brightness": 0.249,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/introduction-overview.png": {
+      "sourceSha256": "25114f5bda859bcb7511d847e96e49fd45fd7b6ddf17da8df352aad2f82e9aee",
+      "width": 3840,
+      "height": 2112,
+      "regions": [],
+      "replacement": "introduction-overview.png",
+      "replacementSha256": "4af07f7ec25015468ce77710be1e2ab94e60ca49a8f64447cd554720502ebe5b",
+      "review": "Real P006/test browser capture; synthetic demonstration account and data."
+    },
+    "/screenshots/kb-activity.png": {
+      "sourceSha256": "8ebe9917e852da701b2feec4296f4194a2da41f948748153004fdc26164a3404",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 1.1979166666666667,
+          "y": 2.178030303030303,
+          "width": 5.416666666666667,
+          "height": 2.840909090909091,
+          "background": "#323232",
+          "brightness": 0.201,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/kb-batch-tag.png": {
+      "sourceSha256": "65552b7dfe361d732e813f9a6723a2f93049ae559bd88887149abeae3fb66547",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#646464",
+          "brightness": 0.402,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/kb-chunk-edit.png": {
+      "sourceSha256": "afa81e554c55cb33020eca0a8ec4acee0e74b63b263242c1381a701665d1a657",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#646464",
+          "brightness": 0.402,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/kb-document-list.png": {
+      "sourceSha256": "80f2042948d6a405b8acc900e5ae1385ba261011cadf7db698920a0e6949f41d",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/kb-document-toolbar-wrapping.png": {
+      "sourceSha256": "21c7e5882456cd552d7180473d4a0998c93629f1af9bd36abc49a2b56260bcc4",
+      "width": 1440,
+      "height": 900,
+      "regions": [
+        {
+          "x": 0.6944444444444444,
+          "y": 1.1111111111111112,
+          "width": 8.333333333333334,
+          "height": 4.222222222222222,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/kb-image-gallery-detail.png": {
+      "sourceSha256": "0c2b8aa2b0859980c79baaf1b218d3e97f86fc72f6ed4ce34158d47a521fcda7",
+      "width": 3840,
+      "height": 2112,
+      "regions": [],
+      "review": "No application wordmark in this crop; third-party client attribution, project names and sample content retain their source identity."
+    },
+    "/screenshots/kb-image-gallery.png": {
+      "sourceSha256": "69332698707f86f7984d24897dde32f2f1797a552a35070a14879e133afcb01a",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.5989583333333334,
+          "y": 1.3257575757575757,
+          "width": 5.859375,
+          "height": 2.9829545454545454,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/kb-image-vector-settings.png": {
+      "sourceSha256": "c4c6361e16e03f2e717de5f1997c49a625f7ba6284dadfb91ea76ce9e699195b",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9114583333333334,
+          "y": 1.8465909090909092,
+          "width": 4.114583333333333,
+          "height": 2.414772727272727,
+          "background": "#7c7c7c",
+          "brightness": 0.498,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/kb-parse-timeline.png": {
+      "sourceSha256": "1d96f170dab2b9c0b542da44ff785abe57a766b70796a9fa667a6c18638fe85a",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#646464",
+          "brightness": 0.402,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/kb-settings.png": {
+      "sourceSha256": "e7df3e7063fe5548ea42387a2b010244ce3359e8f3358cd531f70ea74dbde673",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 1.1979166666666667,
+          "y": 2.178030303030303,
+          "width": 5.416666666666667,
+          "height": 2.840909090909091,
+          "background": "#7c7c7c",
+          "brightness": 0.498,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/kb-upload-tasks.png": {
+      "sourceSha256": "68fbc7dde37e5db538cbf462ab44451e51d6979320ea4b1aaf6843a09a46683d",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/local-browser-task.png": {
+      "sourceSha256": "55619995e498d934570dd05c66abf0cead00435074a1ba87ebb750580d430e7d",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.78125,
+          "y": 6.34469696969697,
+          "width": 7.395833333333333,
+          "height": 3.977272727272727,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/mcp-server-endpoint.png": {
+      "sourceSha256": "a84b21ece6b4a6a6bea0ef8fe72b1e85aedc822c8da6a0bea306edfe87a16df9",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5885416666666667,
+          "height": 2.178030303030303,
+          "background": "#191919",
+          "brightness": 0.1,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/mcp-services.png": {
+      "sourceSha256": "b23eff6d2c08ce125baca095099048b00022e542b303d0c30ea5a3171d0831d4",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#646464",
+          "brightness": 0.402,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/model-editor-catalog.png": {
+      "sourceSha256": "a4acfff8bde6317f25c3d296d4199a58e804c25ffbc7bc3dfc2b1cbc4c546481",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5885416666666667,
+          "height": 2.178030303030303,
+          "background": "#191919",
+          "brightness": 0.1,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/observability-langfuse.png": {
+      "sourceSha256": "4b5e8302b2c3da51ffc25764945cfeab1c3c377dd7dacd0cb42bd833b8802e60",
+      "width": 3840,
+      "height": 2112,
+      "regions": [],
+      "review": "No application wordmark in this crop; third-party client attribution, project names and sample content retain their source identity."
+    },
+    "/screenshots/queue-dashboard.png": {
+      "sourceSha256": "3514d8a05b4a11643c0441dbfdca55fa9df0884ecf4cb6279405477fbc3f8b48",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5625,
+          "height": 2.225378787878788,
+          "background": "#3e3e3e",
+          "brightness": 0.249,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/quickstart-chat.png": {
+      "sourceSha256": "19952c02d0efb82800350049bc332cbd5858a8f65050072b217656bcb3fd88e0",
+      "width": 3840,
+      "height": 2112,
+      "regions": [],
+      "replacement": "introduction-overview.png",
+      "replacementSha256": "4af07f7ec25015468ce77710be1e2ab94e60ca49a8f64447cd554720502ebe5b",
+      "review": "Real P006/test browser capture; synthetic demonstration account and data."
+    },
+    "/screenshots/quickstart-document-list.png": {
+      "sourceSha256": "cde6b73e9f40f32226ca593e1579462e9ba11926eee06ae95af7de03d1390b0b",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/quickstart-init-wizard.png": {
+      "sourceSha256": "cfd3905536b7aea55e2f6d1e4bc1718a74b9cb7b650cde568edf44dd7bdbcdd4",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 1.1979166666666667,
+          "y": 2.178030303030303,
+          "width": 5.416666666666667,
+          "height": 2.840909090909091,
+          "background": "#7c7c7c",
+          "brightness": 0.498,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/quickstart-register.png": {
+      "sourceSha256": "df15ff11e9a312fb222217ee9789f8075f1bba1a72d264386ce21e2a2a4d4ee1",
+      "width": 3840,
+      "height": 2112,
+      "regions": [],
+      "replacement": "quickstart-register.png",
+      "replacementSha256": "e567ef2635c51c46b43cdcf22df0a3bfe9b0e63bb4ed5e06d4f93429231d3271",
+      "review": "Real P006/test browser capture; synthetic demonstration account and data."
+    },
+    "/screenshots/quickstart-upload.png": {
+      "sourceSha256": "054b94e51c6ce11b6be480efed5ff946b686ba6bd4c2aa5e3b7eb3362406ed1d",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 1.1979166666666667,
+          "y": 2.178030303030303,
+          "width": 5.416666666666667,
+          "height": 2.840909090909091,
+          "background": "#7c7c7c",
+          "brightness": 0.498,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/sandbox-desktop.png": {
+      "sourceSha256": "9697d68a9e800b1e52c79559c77be2177f07cf254edda72f8cb3acac784b91fb",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/sandbox-panel-terminal.png": {
+      "sourceSha256": "8f66df3ac52257ee6e71e1c035f2c6401913349b01fea419f24704612530248f",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/sandbox-session-skill-rollout.png": {
+      "sourceSha256": "63ef08ac15cf0db71ecc1f73f861656e7aaab231e0434704a58f6935c4319949",
+      "width": 1280,
+      "height": 720,
+      "regions": [],
+      "review": "No application wordmark in this crop; third-party client attribution, project names and sample content retain their source identity."
+    },
+    "/screenshots/sandbox-user-skill-rollout.png": {
+      "sourceSha256": "0a9cb4e58680b081792fb2423d3fdcef26e05689e6eebcc2e7c388641f56a9ff",
+      "width": 1280,
+      "height": 720,
+      "regions": [],
+      "review": "No application wordmark in this crop; third-party client attribution, project names and sample content retain their source identity."
+    },
+    "/screenshots/settings-members.png": {
+      "sourceSha256": "5d0200de6a2eaa31beb54a441cbd65e66c4aa86b29f0a1e69b3ce34564d8b2da",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5625,
+          "height": 2.225378787878788,
+          "background": "#3e3e3e",
+          "brightness": 0.249,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/settings-models.png": {
+      "sourceSha256": "5ab5846b1824397b7096887cb4c88a14b8d00e9f346fd5716f9e9fb728b6cb54",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5885416666666667,
+          "height": 2.178030303030303,
+          "background": "#191919",
+          "brightness": 0.1,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/settings-storage-backends.png": {
+      "sourceSha256": "05924efc39df5213b1d6161c4772b43f72dd00abc5ef3961f44880d0b8e94622",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5885416666666667,
+          "height": 2.178030303030303,
+          "background": "#191919",
+          "brightness": 0.1,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/settings-system-admin.png": {
+      "sourceSha256": "8cc9d0aff6fbb2e4065d8fa7a817fd008612cf69fdc343ed8bf43152c2429777",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 4.479166666666667,
+          "y": 2.746212121212121,
+          "width": 1.5625,
+          "height": 2.225378787878788,
+          "background": "#3e3e3e",
+          "brightness": 0.249,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/skill-catalog.png": {
+      "sourceSha256": "eedfa58023ddd952bac3c768aa70773ff1501f091b27fb790d5a2dad93a0585d",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/skill-sandbox-chat.png": {
+      "sourceSha256": "a225acc9496719120260b3ed8e32aeb2ca904d1030e26b6d7ac2fc1147479410",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#646464",
+          "brightness": 0.402,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/system-admin-create-user.png": {
+      "sourceSha256": "07d692816f0624deb8ec2a8ab549d4042c8ecc64408fb6f5e2a82e7e937dd69f",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9114583333333334,
+          "y": 1.8465909090909092,
+          "width": 4.114583333333333,
+          "height": 2.414772727272727,
+          "background": "#7c7c7c",
+          "brightness": 0.498,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/system-model-catalog.png": {
+      "sourceSha256": "9022b6bf9041ca0cc36558004aa277d3e27540d3eddb10d77267de3e5bc08bd5",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9114583333333334,
+          "y": 1.8465909090909092,
+          "width": 4.114583333333333,
+          "height": 2.414772727272727,
+          "background": "#7c7c7c",
+          "brightness": 0.498,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/system-user-management.png": {
+      "sourceSha256": "44d8b909f23fa3fde86416a497dba74cefd7a7640ddcf8255cc23a852bc70269",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9114583333333334,
+          "y": 1.8465909090909092,
+          "width": 4.114583333333333,
+          "height": 2.414772727272727,
+          "background": "#7c7c7c",
+          "brightness": 0.498,
+          "blur": true
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/toolbox.png": {
+      "sourceSha256": "4b89c938fed835eff0527edf8d211249ad3cf0d1b37ad40d19d518d43c5dfc36",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/wiki-browser.png": {
+      "sourceSha256": "0fe7be194e783f0f7f19b1f84374b0df959beb1746a5a4bda4506dc117710fe4",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/wiki-graph-groups.png": {
+      "sourceSha256": "a33bd6b255d005761bbeffba881998f714a1155bed1e7e85e743456d5e1d31cd",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.625,
+          "y": 1.183712121212121,
+          "width": 7.447916666666667,
+          "height": 3.5984848484848486,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/wiki-graph.png": {
+      "sourceSha256": "608bfa8486c55b2bd3d6690d66c800b47dfde4797c3ecfeaa5a26c373ad2e750",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#f9f9f9",
+          "brightness": 1,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    },
+    "/screenshots/wiki-revision-history.png": {
+      "sourceSha256": "98dddab1b38b5f770e60973bf9f32d5fddf6f561f6b7003e71d077ca4ac7c10c",
+      "width": 3840,
+      "height": 2112,
+      "regions": [
+        {
+          "x": 0.9375,
+          "y": 1.7045454545454546,
+          "width": 6.848958333333333,
+          "height": 3.3617424242424243,
+          "background": "#646464",
+          "brightness": 0.402,
+          "blur": false
+        }
+      ],
+      "review": "Application wordmark region reviewed; vector branding only, image content and upstream bitmap remain unchanged."
+    }
+  }
+}

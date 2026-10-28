@@ -58,14 +58,19 @@ export async function prepare({allowDirty=false}={}){
   });
   edit('website-docs/.vitepress/theme/SiteHeader.vue',s=>{
     s=replaceExact(s,'aria-label="WeKnora 首页"',`aria-label="${brand.name} 首页"`);
-    return replaceExact(s,'<img :src="`${homeAssets}/brand/weknora-original.png`" alt="WeKnora" width="945" height="650">',`<img :src="'/docs/brand/helmskb-logo.svg'" alt="${brand.name}" style="width:190px;height:auto;object-fit:contain">`);
+    return replaceExact(s,'<span class="wk-logo"><img :src="`${homeAssets}/brand/weknora-original.png`" alt="WeKnora" width="945" height="650"></span>',`<span class="helmskb-docs-logo" style="display:inline-flex;align-items:center;width:190px;height:44px"><img :src="isDark ? '/docs/brand/helmskb-logo-reversed.svg' : '/docs/brand/helmskb-logo.svg'" alt="${brand.name}" style="width:100%;height:auto;position:static;transform:none;filter:none"></span>`);
   });
   edit('website-docs/shared/header.ts',s=>replaceExact(s,'https://github.com/Tencent/WeKnora',brand.repository));
+  edit('website-docs/.vitepress/theme/Screenshot.vue',s=>{
+    s=replaceExact(s,"import { useData, withBase } from 'vitepress'","import { useData, withBase } from 'vitepress'\nimport DocumentBrandOverlay from '../../../helmskb/branding/DocumentBrandOverlay.vue'\nimport screenshotBranding from '../../../helmskb/branding/screenshot-manifest.json'");
+    s=replaceExact(s,"const failed = ref(false)","const screenshotRegions = computed(() => (screenshotBranding.assets as Record<string, {regions?: any[]}>)[props.src]?.regions || [])\nconst failed = ref(false)");
+    return replaceExact(s,'    </div>\n    <figcaption class="wk-shot-caption">','      <DocumentBrandOverlay v-if="size && !failed" :regions="screenshotRegions" :logo="withBase(\'/brand/helmskb-logo.svg\')" />\n    </div>\n    <figcaption class="wk-shot-caption">');
+  });
   edit('internal/productdocs/markdown.go',s=>replaceExact(s,'const PublicBaseURL = "https://weknora.weixin.qq.com/docs/"',`const PublicBaseURL = "${brand.docsBase}"`));
   edit('internal/productdocs/library.go',s=>replaceExact(s,'ref = strings.TrimPrefix(ref, "http://"+strings.TrimPrefix(PublicBaseURL, "https://"))','ref = strings.TrimPrefix(ref, "https://weknora.weixin.qq.com/docs/")\n\tref = strings.TrimPrefix(ref, "http://weknora.weixin.qq.com/docs/")'));
   edit('internal/agent/tools/operations.go',s=>replaceExact(s,'const operationApprovalService = "WeKnora"',`const operationApprovalService = "${brand.name}"`));
   edit('internal/agent/tools/product_docs.go',s=>s.replaceAll('WeKnora documentation',brand.name+' documentation').replaceAll('about WeKnora itself','about '+brand.name+' itself'));
-  for(const file of ['config/builtin_agents.yaml','config/prompt_templates/agent_system_prompt.yaml'])edit(file,s=>transformYaml(s,brand));
+  for(const file of ['config/builtin_agents.yaml','config/prompt_templates/agent_system_prompt.yaml'])edit(file,s=>transformYaml(s,brand,{requireAssistantPolicy:file==='config/prompt_templates/agent_system_prompt.yaml'}));
   const docs=files.filter(f=>/^website-docs\/(?:0[1-7]-[^/]+|sample-data)\/.*\.md$/.test(f));
   for(const file of docs){const before=fs.readFileSync(path.join(stage,file),'utf8');let after=transformMarkdown(before,brand);
     if(file==='website-docs/01-getting-started/01-introduction.md')after=after.replace(/^(# .+\n)/,`$1\n> ${brand.sourceNotice}\n`);
@@ -77,6 +82,12 @@ export async function prepare({allowDirty=false}={}){
     for(const file of fs.readdirSync(path.join(root,'helmskb/branding/assets'))){
       const target=path.join(stage,directory,file==='favicon.ico'?file:'brand/'+file);fs.copyFileSync(path.join(root,'helmskb/branding/assets',file),target);
     }
+  }
+  const screenshotManifest=JSON.parse(fs.readFileSync(path.join(root,'helmskb/branding/screenshot-manifest.json')));
+  for(const file of fs.readdirSync(path.join(root,'website-docs/public/screenshots')).filter(f=>f.endsWith('.png'))){
+    const entry=screenshotManifest.assets['/screenshots/'+file];const original=path.join(root,'website-docs/public/screenshots',file);
+    if(!entry||hash(fs.readFileSync(original))!==entry.sourceSha256)throw Error('Unreviewed upstream screenshot: '+file);
+    if(entry.replacement){const replacement=fs.readFileSync(path.join(root,'helmskb/branding/screenshots',entry.replacement));if(hash(replacement)!==entry.replacementSha256)throw Error('Screenshot capture changed: '+file);fs.writeFileSync(path.join(stage,'website-docs/public/screenshots',file),replacement);report.push({path:'website-docs/public/screenshots/'+file,before:entry.sourceSha256,after:hash(replacement),type:'real-HelmsKB-capture'})}
   }
   const brandHash=hash(fs.readFileSync(path.join(root,'helmskb/branding/brand.json')));
   const approved=new Set(report.map(entry=>entry.path));

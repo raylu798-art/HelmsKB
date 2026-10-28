@@ -41,19 +41,21 @@ export function transformMarkdown(raw,brand){
 
 export function executableFences(raw){return md.parse(raw,{}).filter(t=>['fence','code_block'].includes(t.type)&&t.info.trim()!=='mermaid').map(t=>({language:t.info,content:t.content}));}
 
-export function transformYaml(raw,brand){
+export function transformYaml(raw,brand,{requireAssistantPolicy=false}={}){
   const doc=parseDocument(raw);if(doc.errors.length)throw Error(doc.errors.map(e=>e.message).join(';'));
   const before=doc.toJS();const scrub=value=>{
     if(Array.isArray(value))return value.map(scrub);
     if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).filter(([key])=>!['name','description','content'].includes(key)).map(([key,v])=>[key,scrub(v)]));
     return value;
   };
-  visit(doc,{Pair(_,pair){const key=pair.key?.value;const node=pair.value;
+  let assistantPolicies=0;
+  visit(doc,{Map(_,map){if(map.get('id')==='weknora_assistant'&&brand.assistantCitationPolicy){const node=map.get('content',true);if(typeof node?.value!=='string')throw Error('Unknown assistant prompt shape');node.value+='\nHelmsKB deployment identity and documentation citations:\n'+brand.assistantCitationPolicy+'\n';assistantPolicies++}},Pair(_,pair){const key=pair.key?.value;const node=pair.value;
     if(['name','description','content'].includes(key)&&typeof node?.value==='string'){
       node.value=brandProse(node.value,brand);
       if(key==='content')node.value=node.value.replace(/You are WeKnora, an assistant developed by Tencent/g,`You are ${brand.name}, an enterprise knowledge assistant based on WeKnora`);
     }
   }});
+  if(requireAssistantPolicy&&assistantPolicies!==1)throw Error('Unknown assistant documentation policy position');
   if(JSON.stringify(scrub(before))!==JSON.stringify(scrub(doc.toJS())))throw Error('YAML compatibility fields changed');
   return String(doc);
 }
