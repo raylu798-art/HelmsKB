@@ -1,76 +1,33 @@
-# HelmsKB 开发说明
+# HelmsKB 开发与交付
 
-## 技术与目录
+先阅读 AGENTS.md 并核对编号、Git remote 和环境。业务源码与原始文档跟随完整上游；集中品牌配置为 helmskb/branding/brand.json。
 
-- `frontend/`：Vue 3、TypeScript、Vite、TDesign；依赖由 `package-lock.json` 固定。
-- `cmd/`、`internal/`：Go 后端；版本与依赖以 `go.mod`、`go.sum` 为准。
-- `docreader/`：文档解析服务；依赖以该目录中的项目文件和锁文件为准。
-- `migrations/`：数据库迁移；升级前单独审查。
-- `cli/`、`client/`、`packages/`：客户端与集成；进入子目录前读取适用的 `AGENTS.md`。
-- `frontend/public/brand/`：透明 SVG 品牌资源。
-- `.github/workflows/frontend-ci.yml`：只读的前端检查和构建。
-- `.github/upstream-workflows/`：归档的上游工作流，不会自动执行。
+1. 固定干净的源码提交，安装 helmskb/build/package-lock.json 的依赖并运行测试。
+2. node helmskb/build/prepare.mjs 生成独立的 .helmskb/stages/ 版本化目录和来源清单，未知桥接形态直接失败；使用 run-staged.mjs 在清单对应的目录执行命令。
+3. node helmskb/build/build-web.mjs 按锁文件串行验证与构建文档、前端。文档复制到暂存前端 /docs/；用 helmskb/build/Dockerfile.frontend 打包。
+4. 同一暂存树构建 Go、AnyDoc、BrowserSkill、DocReader 及迁移；保留上游运行依赖和许可材料。可复用缓存，不能复用旧应用实现。
+5. 记录来源、镜像摘要、迁移版本和验收；按同一镜像摘要晋级。
 
-## 前端验证
+Go 版本遵循 go.mod；Python 遵循 docreader/uv.lock；AnyDoc 遵循 Cargo.lock 并保留 anydoc 构建标签。重型构建串行，Go/Cargo 并发 2，Node heap 3072 MiB，适配约 8 GiB Docker 内存。网络镜像通过交付参数配置，不关闭证书或依赖校验。
 
-使用 Node.js 24：
+source-manifest.json 记录上游/源码 SHA、品牌配置哈希、迁移及桥接前后哈希。镜像摘要与环境证据另行记录；不得写入凭据。
 
-```bash
-cd frontend
-npm ci --no-audit --no-fund
-npm --prefix ../website-docs ci --no-audit --no-fund
-npm run check-i18n
-npm run check:docs-links
-npm run build:with-docs
-```
+node helmskb/build/boundary.mjs 检查原始树差异；允许范围由 ownership.json 控制，暂存转换有独立清单。业务 API、数据库表名、Go 模块路径、资源 ID 和迁移编号不变。
 
-内存较紧时，构建前设置 `NODE_OPTIONS=--max-old-space-size=3072`。前端构建无需模型凭据，也不能证明检索问答可用。修改 Go、解析器或迁移时，需要补充对应模块测试和集成验证。
+测试覆盖文案与兼容标识、文档锚点和代码块、YAML 结构、未知桥接失败、双父连接后的整版本合并。保留上游测试；构建成功不能代替实际模型上下文、工具调用和引用验收。
 
-本地开发服务器需要自行指定本项目后端：设置 `VITE_DEV_PROXY_TARGET`，并通过 Vite 参数指定已分配的空闲前端端口。当前仓库没有已登记的运行端口或后端服务。
+扩展优先使用 API、MCP、连接器和适配器。必要核心桥接单独登记位置、原因、测试和移除条件。本阶段不开发行业能力。
 
-## 镜像
+P006/test 绑定 127.0.0.1:8096，使用独立网络、卷、数据库用户、Redis 和密钥。实际配置与备份在项目私有运行目录；不得复制 P005 凭据或资料，不修改全局 Ollama 默认上下文。模型配置需记录实际加载参数。
 
-文档源码在 `website-docs/`，使用已有 VitePress 目录、锚点和本地搜索。`build:with-docs` 先构建文档到被 Git 忽略的 `frontend/public/docs/`，再构建应用；Vite 会将文档一并复制到 `frontend/dist/docs/`。`npm run build` 保留纯应用构建兼容性；HelmsKB 交付使用联合构建。首次运行开发服务器前，也可执行 `npm --prefix ../website-docs run build:embedded` 生成本地文档。
+完整启动、升级和恢复见 [运行手册](helmskb/build/RUNBOOK.md)。
 
-`frontend/Dockerfile.helmskb` 将已联合构建的 `frontend/dist/` 打包到固定的上游 UI 运行基底，并携带许可材料和支持文档 clean URL 的 Nginx 配置。镜像打包会检查文档入口存在。在仓库根目录可构建开发镜像：
+## 当前候选的运行层装配
 
-```bash
-docker build --pull=false -f frontend/Dockerfile.helmskb -t p006-helmskb-local-ui:0.8.3-brand.6 .
-```
+候选核心产物来源为 5f9912f01a912a2f6c5e5e387879f80a5c8b1f7e；后续构建工具和验证记录可以继续提交，不能把新的源码 HEAD 冒充已部署来源。镜像额外记录 packaging revision。
 
-此命令只构建前端，不是完整平台部署。发布时使用独立注册表和不可变摘要，并记录源码提交和构建依据。
+Dockerfile.app-shared-runtime 可复用本次从锁定上游源码完整构建的 DocReader OS/依赖层，补齐 Node24、数据库客户端、gosu、FFmpeg 和 qpdf。构建前必须核对 DOCREADER_IMAGE 的上游 SHA 与 upstream.lock.json 一致。该方式共用当前版本的底层依赖层，避免重复下载；不允许输入旧版应用镜像。Dockerfile.app-runtime 保留独立 Debian 运行层的构建方式。
 
-## 助手后端构建
+原始 DocReader 先按 docker/Dockerfile.docreader 和 docreader/uv.lock 构建，再使用 Dockerfile.docreader-metadata 添加发行来源清单。前端、Go、迁移和两种运行层均按同一上游 SHA 校验。
 
-单项助手移植的运行版本为 `0.8.3-helmskb-assistant.1`。需要 Go 1.26、Rust 1.90 或兼容版本、C/C++ 编译器、SQLite 开发头文件（Debian 的 `libsqlite3-dev`）及与 Debian Bookworm 兼容的构建环境。依赖由 `go.sum` 和 AnyDoc 的 `Cargo.lock` 校验，保留校验服务。Linux amd64 构建示例：
-
-```bash
-export GOMAXPROCS=2 GOFLAGS=-p=2 CARGO_BUILD_JOBS=2
-bash scripts/build-helmskb-server.sh
-docker build --pull=false -f docker/Dockerfile.helmskb-runtime \
-  --build-arg SOURCE_COMMIT="$(git rev-parse HEAD)" \
-  --build-arg SERVER_SHA256="$(sha256sum build/helmskb/WeKnora | cut -d' ' -f1)" \
-  -t p006-helmskb-local-app:0.8.3-assistant.1 .
-```
-
-打包基于固定的官方 v0.8.3 运行镜像，保留原有原生依赖、BrowserSkill 与第三方对应源码，只替换完整编译的服务、助手配置及已审阅迁移。生成的 `build/` 不提交；发布必须记录源码提交、二进制 SHA-256、镜像摘要和迁移结果。该命令不自动部署。助手测试与迁移说明见 [移植记录](docs/engineering/assistant-backport.md)。
-
-没有本机工具链时，可使用 `docker/Dockerfile.helmskb-builder` 构建独立的 P006 编译环境。该文件固定 Go 和 Rust 基础镜像并安装 SQLite 头文件；源目录挂到 `/src`，Go 模块与编译缓存分别使用本项目的独立命名卷。在该容器内运行上述脚本，随后在宿主机打包运行镜像。编译环境不挂载 Docker socket、运行环境的 `.env` 或业务数据。
-
-## 环境隔离
-
-当前多项目工作区登记编号为 **P006**，仅登记 `local`，状态为 `not_deployed`，没有分配运行端口。`test` 与 `production` 尚未接入。
-
-- 本地资源使用 `p006-helmskb-local` 前缀；测试、生产分别规划。
-- 不复制其他项目的数据库、卷、服务名、模型 API Key、JWT/AES 密钥或实际 `.env`。
-- 仓库中的 Compose、Helm 和示例环境文件来自上游基线。工作区内正式启动前，必须先准备 P006 专用配置、容器名、端口、数据库账号和数据目录，不能直接套用上游默认值。
-- 秘密配置放在本项目独立的私有配置位置；仓库只保留模板和凭据位置说明。
-- 日志、上传资料、数据库、备份、`node_modules` 和构建产物不提交。
-
-## 研发与发布
-
-从功能分支修改，记录可复现的验证结果。前端 CI 当前不构建后端、不部署、不生成 Release、不发布镜像或包。
-
-上线前至少验证：真实资料解析与完整性、模型连接、检索及引用正确性、拒答、权限与撤权、数据源更新/删除、费用和延迟、备份恢复、升级迁移。代码回退与数据恢复分开设计。没有运行核验时，健康状态保持未知。
-
-上游同步规则见 [UPSTREAM.md](UPSTREAM.md)。
+本机完整 service 单元套件因大量 SQLite 临时库触发默认 10 分钟总超时；同源 GitHub CI 已通过。Python venv 环境缺失已补齐并复测失败用例，不得把本机超时记为通过。后续在构建容器中可把测试临时目录置于可执行 tmpfs，并令 GOTMPDIR 使用独立磁盘目录，避免编译中间文件占满 tmpfs。

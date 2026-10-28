@@ -136,7 +136,6 @@ func TestTokenizeKeepsIdentifiersAndPairsHan(t *testing.T) {
 }
 
 func TestNormalizeRefAcceptsSiteForms(t *testing.T) {
-	assert.Equal(t, "/docs/", PublicBaseURL, "assistant citations must stay on the HelmsKB deployment")
 	for _, ref := range []string{
 		"03-features/14-wiki",
 		"03-features/14-wiki.md",

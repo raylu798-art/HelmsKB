@@ -1,4 +1,4 @@
-# HelmsKB 官网与文档
+# WeKnora 官网与文档
 
 `website-docs/` 包含官网、文档、共享样式和全部构建部署脚本，可独立复制和构建，不依赖仓库外层文件。官网和文档共用一个域名、一次构建和一份部署产物。
 
@@ -29,7 +29,7 @@ npm run package:site
 
 ### 2. 上传并解压
 
-只需把压缩包上传到服务器。服务器不需要 Node.js，也不需要 HelmsKB 后端或独立文档服务。
+只需把压缩包上传到服务器。服务器不需要 Node.js，也不需要 WeKnora 后端或独立文档服务。
 
 每次发布使用一个新的空目录，避免混入旧站点文件。下面的 `20260915-1` 是示例发布编号，后续发布换一个编号：
 
@@ -140,6 +140,7 @@ npm run test:integration
 - `static-site/`：唯一的部署目录，由构建生成。
 - `deploy/`、`Dockerfile`：Nginx 和 Docker 部署配置。
 - `releases/`：生成的部署压缩包。
+- `embed.go`：把 `01-getting-started/` 至 `07-releases/` 的正文编进 WeKnora 服务端，供内置的 WeKnora 助手检索和引用。新增分类目录时，同步更新 `embed.go` 和 `internal/productdocs/library.go` 中的分类列表。服务端测试会检查每篇正文能否解析、站内链接与锚点是否有效。
 
 品牌素材来源见 [homepage/BRAND-ASSETS.md](homepage/BRAND-ASSETS.md)。产品视频使用 README 中的 GitHub 原始附件，播放需要访问 GitHub；页面、文档和截图随包部署。
 

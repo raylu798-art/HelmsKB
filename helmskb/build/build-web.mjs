@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { root } from './boundary.mjs';
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'.helmskb/source-manifest.json')));
+const stage=manifest.stage;
+if(!stage.startsWith(path.join(root,'.helmskb')+path.sep)||!fs.existsSync(path.join(stage,'helmskb-generated-source.json')))throw Error('Prepare a source stage first');
+const npm=process.platform==='win32'?'npm.cmd':'npm';
+function run(directory,args){const r=spawnSync(npm,args,{cwd:path.join(stage,directory),stdio:'inherit',shell:process.platform==='win32',env:{...process.env,NODE_OPTIONS:'--max-old-space-size=3072',VITE_FRONTEND_COMMIT:manifest.sourceCommit,VITE_IS_DOCKER:'true'}});if(r.status!==0)process.exit(r.status||1)}
+for(const directory of ['website-docs','frontend'])run(directory,['ci','--no-audit','--no-fund']);
+run('website-docs',['run','check:docs']);
+run('website-docs',['run','build:docs']);
+const built=path.join(stage,'website-docs/.vitepress/dist');
+if(!fs.existsSync(path.join(built,'index.html')))throw Error('Documentation build is incomplete');
+const target=path.join(stage,'frontend/public/docs');
+if(fs.existsSync(target))throw Error('Unexpected pre-existing generated docs');
+fs.cpSync(built,target,{recursive:true});
+run('frontend',['run','check-i18n']);
+run('frontend',['run','build']);
+const html=fs.readFileSync(path.join(stage,'frontend/dist/index.html'),'utf8');
+if(!html.includes('<title>HelmsKB</title>'))throw Error('Distribution title was not branded');
+console.log('Frontend and same-origin documentation built from '+manifest.sourceCommit);

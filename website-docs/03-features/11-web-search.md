@@ -129,7 +129,7 @@ flowchart TD
 - 抓取后将完整 Markdown 保存到会话所属租户的文件存储，返回 `web://...` 格式的 `full_output_path`。`read_file` 可跨轮读取这些文件，无需启用沙箱。正文与生成它的 assistant 消息绑定，读取检查租户、会话所有者、会话、消息和网页专用绑定；普通附件不能作为网页读出。删除消息或会话后不可访问，存储保留策略与现有软删除消息附件一致。
 - 保存失败不会丢弃已经抓到的正文：结果包含 `storage_error`，此时续读仅限本轮内存缓存。单个保存的 Markdown 上限 8 MiB。
 - `read_file` 的 `offset` 是从 1 开始的行号，`limit` 最多 2,000 行，网页读取最多 50 KiB，并继续受 Agent 输出预算约束。遇到超长单行时返回 `next_offset` 和 `next_line_offset`，使用 `offset` 加 `line_offset` 续读原行；这样无沙箱 Agent 也不需要执行 shell。
-- Agent 单页下载上限 2 MiB，超限报告 `body_too_large`，不会把静默截断的 HTML 冒充完整页面。请求超时仍为 60 秒，Agent 抓取接受 HTTP 2xx 响应。
+- Agent 单页下载上限 2 MiB，超限报告 `body_too_large`，不会把静默截断的 HTML 冒充完整页面。请求超时默认 3 分钟（`WEKNORA_WEB_FETCH_TIMEOUT`，HTTP 与 chromedp 共用这一预算），Agent 抓取接受 HTTP 2xx 响应。
 - 失败继续返回稳定错误码与可重试标记。临时失败可合理重试；永久失败可选择其他相关来源，证据不足时说明缺口。一次整批失败不会强制终止研究，也不能视为验证成功。
 - 关闭联网时，无论旧 `allowed_tools` 是否列出这两个工具，运行时均不注册。失败网页不再作为成功网页引用展示。
 
@@ -137,9 +137,9 @@ flowchart TD
 
 ## docker/searxng 的角色
 
-SearXNG 是自托管的元搜索引擎（聚合上游多个引擎），HelmsKB 把它作为**免 API Key 的默认可选搜索后端**打包在 `docker-compose.yml` 的 `searxng` / `full` profile 中：
+SearXNG 是自托管的元搜索引擎（聚合上游多个引擎），WeKnora 把它作为**免 API Key 的默认可选搜索后端**打包在 `docker-compose.yml` 的 `searxng` / `full` profile 中：
 
-- `docker/searxng/settings.yml`：关键定制包括 `search.formats` 开启 `json`（HelmsKB 后端走 `/search?format=json`）、`server.limiter: false`（关闭 IP 限流，否则后端会被节流；若公开部署需重新开启并配置放行名单）、`secret_key` 由入口脚本以 `SEARXNG_SECRET` 环境变量替换。
+- `docker/searxng/settings.yml`：关键定制包括 `search.formats` 开启 `json`（WeKnora 后端走 `/search?format=json`）、`server.limiter: false`（关闭 IP 限流，否则后端会被节流；若公开部署需重新开启并配置放行名单）、`secret_key` 由入口脚本以 `SEARXNG_SECRET` 环境变量替换。
 - `searxng-init` 辅助容器先把模板复制进独立 volume，避免 SearXNG 入口脚本原地 sed 修改把解析后的密钥写回仓库工作区。
 - 宿主机端口由 `SEARXNG_PORT`（默认 8888）和 `SEARXNG_BIND`（默认 `127.0.0.1`）控制。不要把 `SEARXNG_PORT` 设成与 `APP_PORT`（默认 8080）相同：Linux 上两者同时发布同一端口时，访问 `localhost:8080` 可能先命中 SearXNG，登录接口会返回 SearXNG 的 HTML 404。
 - 应用容器默认把 `searxng` 主机名并入 SSRF 白名单：`SSRF_WHITELIST_EXTRA=searxng,qdrant,...`，因此租户配置 `base_url: http://searxng:8080` 开箱即用。

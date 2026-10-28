@@ -10,13 +10,13 @@ export interface ChunkingSample {
   text: string
 }
 
-const MARKDOWN_SAMPLE = `# HelmsKB 知识工作台
+const MARKDOWN_SAMPLE = `# WeKnora 知识框架
 
-HelmsKB 是基于 WeKnora 定制的企业知识工作台，集 RAG 问答、ReAct 智能体、Wiki 知识图谱于一体。本文介绍其设计动机、架构与典型用法。
+WeKnora 是一个基于 LLM 的开源企业知识框架，集 RAG 问答、ReAct 智能体、Wiki 知识图谱于一体。本文介绍其设计动机、架构与典型用法。
 
 ## 设计动机
 
-企业内部知识散落在 Confluence、飞书、Notion、Git 仓库等多种系统，传统全文检索难以理解语义，单一 LLM 又缺少可信赖的上下文来源。HelmsKB 的目标是：
+企业内部知识散落在 Confluence、飞书、Notion、Git 仓库等多种系统，传统全文检索难以理解语义，单一 LLM 又缺少可信赖的上下文来源。WeKnora 的目标是：
 
 - **多源接入**：把分散内容统一抽取、清洗、向量化
 - **多策略检索**：稠密、稀疏、知识图谱多路召回 + RRF 融合
@@ -71,7 +71,7 @@ make dev-frontend          # 启动前端，自动刷新
 
 ## 架构概览
 
-HelmsKB 继承的 WeKnora 后端采用清晰的分层架构：
+WeKnora 后端采用清晰的分层架构：
 
 \`\`\`
 ┌────────────────────────┐
@@ -109,7 +109,7 @@ Agent 引擎执行经典 ReAct 循环：
 - 故障排查：\`website-docs/01-getting-started/05-troubleshooting.md\`
 - 产品介绍：\`website-docs/01-getting-started/01-introduction.md\``
 
-const FAQ_SAMPLE = `# HelmsKB 部署与使用 FAQ
+const FAQ_SAMPLE = `# WeKnora 部署与使用 FAQ
 
 本文档汇总社区与内部用户最常问到的问题，按"安装 / 配置 / 检索 / 模型 / 性能"分类。
 
@@ -147,8 +147,8 @@ docker pull docker.m.daocloud.io/wechatopenai/weknora-ui:v0.5.0
 ### Q8: 如何启用多模态？
 在知识库的"多模态配置"中开启，并选择一个 VLM 模型（如 GPT-4o、Qwen2.5-VL）。开启后，文档中的图片会被 VLM 描述并参与检索。
 
-### Q9: 怎么把日志改成 JSON 格式？
-设置 \`LOG_FORMAT=json LOG_LEVEL=info\`，便于接入 ELK / Loki 等日志栈。
+### Q9: 如何自定义日志格式？
+设置 \`WEKNORA_LOG_FORMAT="%d %level %msg" LOG_LEVEL=info\`。模板必须包含 \`%msg\`；留空使用默认格式，\`json\` 不是受支持的格式关键字。
 
 ## 检索与召回
 

@@ -4,7 +4,7 @@
 
 本仓库为 HelmsKB，当前管理工作区永久编号 **P006**。预期 `origin` 为 `https://github.com/raylu798-art/HelmsKB.git`，`upstream` 为 `https://github.com/Tencent/WeKnora.git`。读取 `README.md`、`UPSTREAM.md` 和 `DEVELOPMENT.md`；进入子目录后遵守已有适用规则，不覆盖或假定根规则自动替代子目录规则。
 
-在当前多项目工作区操作前，从管理工作区运行 `_management/scripts/Get-ProjectContext.ps1 -Id P006 -Environment local` 核对编号、解析路径、remote 和环境。管理登记以 `_management/projects.json` 为准。当前仅登记 local，尚未部署和分配端口，不能沿用演示项目的运行事实。
+在当前多项目工作区操作前，从管理工作区运行 `_management/scripts/Get-ProjectContext.ps1 -Id P006 -Environment local` 核对编号、解析路径、remote 和环境。管理登记以 `_management/projects.json` 为准。local 尚未部署；本次计划新增独立 test 环境，登记来源仍以中央注册表为准，不能沿用演示项目的运行事实。
 
 ## 独立资源与配置
 
@@ -27,3 +27,7 @@
 接入、部署、升级或配置调整后，按工作区规则更新 P006 登记、`nextAction` 和中央档案。手工修改登记前后运行 `_management/scripts/Sync-Overview.ps1`；总览和状态文件由脚本生成，不手写检查结果。同步不负责启动服务或判断运行健康。
 
 部署前读取 P006 中央运行手册，核对目标环境、版本、配置和验证命令；升级先审查差异、迁移和恢复方案。数据库恢复与代码回退分别设计。遵守当前会话授权，不额外建立审批流程。
+
+## 完整上游与品牌边界
+
+保持原项目业务源码和原始文档，禁止逐功能摘补。上游 SHA 由 helmskb/build/upstream.lock.json 锁定；所有品牌转换只在 .helmskb/ 生成目录执行。自有代码收敛到 helmskb/，工作流按归档策略维护。同步须保留真实上游祖先，不 squash、不强推。新 test 资源使用 p006-helmskb-test 前缀，保持 P005/8095 与其配置数据不变。

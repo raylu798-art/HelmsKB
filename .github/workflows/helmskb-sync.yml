@@ -1,0 +1,26 @@
+name: HelmsKB manual upstream candidate
+on:
+  workflow_dispatch:
+    inputs:
+      upstream_sha:
+        description: Reviewed full upstream main SHA
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with: {node-version: 24}
+      - run: |
+          git config user.name 'HelmsKB sync'
+          git config user.email 'helmskb-sync@users.noreply.github.com'
+          git remote add upstream https://github.com/Tencent/WeKnora.git
+          npm ci --prefix helmskb/build --no-audit --no-fund
+      - run: node helmskb/build/sync-upstream.mjs "$UPSTREAM_SHA" --push
+        env:
+          UPSTREAM_SHA: ${{ inputs.upstream_sha }}

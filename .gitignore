@@ -1,23 +1,9 @@
-# Local secrets and developer state
-.env
-.env.*
+# 忽略所有隐藏文件和目录
+.*
+# 但不忽略特定隐藏文件和目录
 !.env.example
-!.env.lite.example
-!.env.*.example
-.vscode/
-.idea/
-.codex/
-.DS_Store
-Thumbs.db
-
-# Runtime data, private management and generated output
-/_management/
-/_project_runtime/
-/runtime/
-/backups/
-**/dist/
-coverage/
-/frontend/public/docs/
+!.gitignore
+!.github/
 
 # 敏感文件
 *.pem
@@ -77,3 +63,9 @@ miniprogram/project.private.config.json
 
 # Locally built BrowserSkill runtime and extension bundles
 /artifacts/browserskill/
+
+# HelmsKB generated build stages and reports
+/.helmskb/
+/frontend/public/docs/
+/helmskb/build/node_modules/
+/helmskb/build/*.log

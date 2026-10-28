@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "go": "go1.26.10",
+  "node": "v24.20.0",
+  "anydocRust": "1.90.0",
+  "browserSkillRust": "1.99.1",
+  "browserSkillSourceCommit": "da6bf4eed2dd7256567e152df8c903c87f6598c3"
+}

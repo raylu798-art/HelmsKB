@@ -9,6 +9,7 @@ import "@/assets/theme/theme.css";
 import "@/assets/theme/tdesign-overrides.less";
 import "@/assets/dropdown-menu.less";
 import "@/components/css/chat-hljs-dark.less";
+import "@/components/css/assistant-page-fill.less";
 // vue-virtual-scroller ships its own tiny stylesheet — required for
 // RecycleScroller/DynamicScroller to size their viewport correctly.
 // Without it the scroller computes 0 height and renders no items.
@@ -31,7 +32,7 @@ async function bootstrap() {
 
   // 全局错误处理：捕获未处理的组件错误，防止白屏
   app.config.errorHandler = (err, instance, info) => {
-    console.error("[HelmsKB] Unhandled Vue error:", err, "\nComponent:", instance, "\nInfo:", info);
+    console.error("[WeKnora] Unhandled Vue error:", err, "\nComponent:", instance, "\nInfo:", info);
   };
 
   app.use(TDesign);

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/Tencent/WeKnora.git",
+  "trackingBranch": "main",
+  "commit": "dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2",
+  "upstreamVersion": "v0.8.3",
+  "distributionVersion": "0.1.0-rc.1",
+  "postgresMigration": 134,
+  "legacyCommit": "d9fdd61cc977f99e0a26a7ddb364d92550a6d3c4"
+}

@@ -40,12 +40,7 @@ test('every linked doc page and anchor exists in website-docs', () => {
   }
 })
 
-test('docsUrl keeps every documentation link on this deployment', () => {
-  assert.equal(docsUrl('home'), '/docs/')
-  assert.equal(docsUrl('models'), '/docs/03-features/06-models')
-  for (const page of Object.keys(DOC_PAGES) as (keyof typeof DOC_PAGES)[]) {
-    const target = new URL(docsUrl(page), 'http://helmskb.example')
-    assert.equal(target.origin, 'http://helmskb.example')
-    assert.ok(target.pathname.startsWith('/docs/'))
-  }
+test('docsUrl points at the public docs site', () => {
+  assert.equal(docsUrl('home'), 'https://weknora.weixin.qq.com/docs/')
+  assert.equal(docsUrl('models'), 'https://weknora.weixin.qq.com/docs/03-features/06-models')
 })

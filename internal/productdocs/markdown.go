@@ -10,7 +10,7 @@ import (
 )
 
 // PublicBaseURL is where the documentation site serves these pages.
-const PublicBaseURL = "/docs/"
+const PublicBaseURL = "https://weknora.weixin.qq.com/docs/"
 
 // maxSectionLevel is the deepest heading that starts its own section; deeper
 // headings stay in their section's text. The site anchors every level, and

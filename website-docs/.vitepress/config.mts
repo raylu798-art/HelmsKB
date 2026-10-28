@@ -5,6 +5,7 @@ import { defineConfig, type DefaultTheme } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import './theme-config.d.ts'
 import { repoVersionLabel } from './version'
+import { readScreenshotSizes } from './screenshot-sizes.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const require = createRequire(import.meta.url)
@@ -35,7 +36,6 @@ function itemText(dir: string, file: string): string {
   const raw = readFileSync(resolve(root, dir, file), 'utf-8')
   const heading = raw.match(/^#\s+(.+)$/m)?.[1] ?? file.replace(/\.md$/, '')
   return heading
-    .replace(/\s*\{#[^}]+\}\s*$/, '')
     .replace(/^API 参考[:：]\s*/, '')
     .replace(/\s*[（(][^（()）]*[)）]\s*/g, ' ')
     .replace(/\s{2,}/g, ' ')
@@ -81,18 +81,18 @@ function tokenize(text: string): string[] {
   return tokens
 }
 
-const repo = 'https://github.com/raylu798-art/HelmsKB'
+const repo = 'https://github.com/Tencent/WeKnora'
 
 export default withMermaid(
   defineConfig({
-    title: 'HelmsKB',
-    titleTemplate: ':title · HelmsKB 文档',
-    description: '随 HelmsKB 一同交付的本地文档：使用、配置、API 与 v0.8.3 基础技术参考',
+    title: 'WeKnora',
+    titleTemplate: ':title · WeKnora 文档',
+    description: 'WeKnora（维娜拉）官方文档：部署、配置、功能说明、API 参考与二次开发',
     lang: 'zh-CN',
     base: '/docs/',
     cleanUrls: true,
     appearance: { storageKey: 'vitepress-theme-appearance' },
-    lastUpdated: false,
+    lastUpdated: true,
     srcExclude: ['README.md', 'MIGRATION.md', 'homepage/**', 'shared/**', 'scripts/**', 'deploy/**', 'static-site/**', 'releases/**'],
     metaChunk: true,
     transformPageData(pageData) {
@@ -104,7 +104,7 @@ export default withMermaid(
       ['link', { rel: 'icon', href: '/docs/favicon.ico', type: 'image/x-icon' }],
       ['meta', { name: 'theme-color', content: '#101f38' }],
       ['meta', { property: 'og:type', content: 'website' }],
-      ['meta', { property: 'og:title', content: 'HelmsKB 文档' }],
+      ['meta', { property: 'og:title', content: 'WeKnora 文档' }],
       [
         'meta',
         {
@@ -129,11 +129,12 @@ export default withMermaid(
 
     themeConfig: {
       logoLink: { link: '/', target: '_self' },
-      siteTitle: 'HelmsKB',
+      siteTitle: 'WeKnora',
 
       nav: [],
 
       weknoraVersion: repoVersionLabel,
+      weknoraScreenshotSizes: readScreenshotSizes(resolve(root, 'public/screenshots')),
 
       sidebar,
 
@@ -187,8 +188,8 @@ export default withMermaid(
       },
 
       footer: {
-        message: `HelmsKB 本地文档 · 基础版本 ${repoVersionLabel} · MIT License`,
-        copyright: '上游文档版权 © Tencent WeKnora；HelmsKB 定制与维护',
+        message: `基于 WeKnora ${repoVersionLabel} 源码整理 · MIT License`,
+        copyright: '© Tencent WeKnora',
       },
     },
 

@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { root } from './boundary.mjs';
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'.helmskb/source-manifest.json')));
+if(!manifest.stage.startsWith(path.join(root,'.helmskb/stages')+path.sep)||!fs.existsSync(path.join(manifest.stage,'helmskb-generated-source.json')))throw Error('Unknown prepared source');
+const tests=['src/views/settings/defaultSettingsState.test.ts','src/views/automation/automationInteractions.test.ts','src/utils/automationSchedule.test.ts','src/views/chat/automationConversation.test.ts','src/components/assistant/AssistantPanel.test.ts','src/components/assistant/AssistantWorkflows.test.ts'];
+const result=spawnSync(process.execPath,['--import','tsx','--test',...tests],{cwd:path.join(manifest.stage,'frontend'),stdio:'inherit'});
+if(result.error)throw result.error;
+process.exit(result.status??1);
