@@ -7,7 +7,8 @@ import { transformMarkdown,executableFences,transformYaml,replaceExact,normalize
 
 export const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const brand=JSON.parse(fs.readFileSync(path.join(root,'helmskb/branding/brand.json'),'utf8'));
-export function prepare({allowDirty=false}={}){
+async function eachBounded(items,action){for(let i=0;i<items.length;i+=24)await Promise.all(items.slice(i,i+24).map(action))}
+export async function prepare({allowDirty=false}={}){
   checkBoundary();
   if(!allowDirty&&git(['status','--porcelain']).toString().trim())throw Error('Release preparation requires a clean source commit');
   const head=git(['rev-parse','HEAD']).toString().trim();
@@ -17,12 +18,12 @@ export function prepare({allowDirty=false}={}){
   const stage=fs.mkdtempSync(path.join(parent,'stages',head.slice(0,12)+'-'));
   const files=git(['ls-files','--cached','--others','--exclude-standard','-z']).toString().split('\0').filter(Boolean);
   const report=[];
-  for(const file of files){
+  await eachBounded(files,async file=>{
     if(file.includes('..')||path.isAbsolute(file))throw Error('Invalid source path');
-    const from=path.join(root,file);if(!fs.existsSync(from))continue;
-    if(!fs.lstatSync(from).isFile())throw Error('Source symlinks/directories are not allowed: '+file);
-    const to=path.join(stage,file);fs.mkdirSync(path.dirname(to),{recursive:true});fs.copyFileSync(from,to);
-  }
+    const from=path.join(root,file);let stat;try{stat=await fs.promises.lstat(from)}catch(error){if(error.code==='ENOENT')return;throw error}
+    if(!stat.isFile())throw Error('Source symlinks/directories are not allowed: '+file);
+    const to=path.join(stage,file);await fs.promises.mkdir(path.dirname(to),{recursive:true});await fs.promises.copyFile(from,to);
+  });
   fs.writeFileSync(path.join(stage,'helmskb-generated-source.json'),JSON.stringify({source:root,head,generated:true}));
   function edit(file,change){
     const target=path.join(stage,file);const before=fs.readFileSync(target,'utf8');const after=change(before);
@@ -79,11 +80,12 @@ export function prepare({allowDirty=false}={}){
   }
   const brandHash=hash(fs.readFileSync(path.join(root,'helmskb/branding/brand.json')));
   const approved=new Set(report.map(entry=>entry.path));
-  for(const file of files){
-    if(approved.has(file)||ownership.stagedGeneratedFiles.includes(file)||ownership.stagedGeneratedPrefixes.some(p=>file.startsWith(p)))continue;
+  await eachBounded(files,async file=>{
+    if(approved.has(file)||ownership.stagedGeneratedFiles.includes(file)||ownership.stagedGeneratedPrefixes.some(p=>file.startsWith(p)))return;
     const original=path.join(root,file),generated=path.join(stage,file);
-    if(fs.existsSync(original)&&(!fs.existsSync(generated)||!fs.readFileSync(original).equals(fs.readFileSync(generated))))throw Error('Unapproved staging mutation: '+file);
-  }
+    if(!fs.existsSync(original))return;
+    const [a,b]=await Promise.all([fs.promises.readFile(original),fs.promises.readFile(generated)]);if(!a.equals(b))throw Error('Unapproved staging mutation: '+file);
+  });
   const manifest={schemaVersion:1,distributionVersion:lock.distributionVersion,sourceCommit:head,upstreamCommit:lock.commit,upstreamVersion:lock.upstreamVersion,brandProfileVersion:brand.profileVersion,brandProfileSha256:brandHash,postgresMigration:lock.postgresMigration,dirty:allowDirty,stage,bridges:report};
   const {stage:privatePath,bridges,...publicManifest}=manifest;
   fs.writeFileSync(path.join(stage,'frontend/public/helmskb-build.json'),JSON.stringify(publicManifest,null,2));
@@ -92,4 +94,4 @@ export function prepare({allowDirty=false}={}){
   console.log(JSON.stringify({stage,sourceCommit:head,upstreamCommit:lock.commit,transformedFiles:report.length,rawBusinessSource:'unchanged'},null,2));
   return manifest;
 }
-if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))prepare({allowDirty:process.argv.includes('--allow-dirty')});
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))await prepare({allowDirty:process.argv.includes('--allow-dirty')});
