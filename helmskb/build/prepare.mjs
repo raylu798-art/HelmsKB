@@ -86,6 +86,12 @@ export function prepare({allowDirty=false}={}){
     }
   }
   const brandHash=hash(fs.readFileSync(path.join(root,'helmskb/branding/brand.json')));
+  const approved=new Set(report.map(entry=>entry.path));
+  for(const file of files){
+    if(approved.has(file)||ownership.stagedGeneratedFiles.includes(file)||ownership.stagedGeneratedPrefixes.some(p=>file.startsWith(p)))continue;
+    const original=path.join(root,file),generated=path.join(stage,file);
+    if(fs.existsSync(original)&&(!fs.existsSync(generated)||!fs.readFileSync(original).equals(fs.readFileSync(generated))))throw Error('Unapproved staging mutation: '+file);
+  }
   const manifest={schemaVersion:1,distributionVersion:lock.distributionVersion,sourceCommit:head,upstreamCommit:lock.commit,upstreamVersion:lock.upstreamVersion,brandProfileVersion:brand.profileVersion,brandProfileSha256:brandHash,postgresMigration:lock.postgresMigration,dirty:allowDirty,stage,bridges:report};
   fs.writeFileSync(path.join(stage,'frontend/public/helmskb-build.json'),JSON.stringify(manifest,null,2));
   fs.writeFileSync(path.join(parent,'source-manifest.json'),JSON.stringify(manifest,null,2));
