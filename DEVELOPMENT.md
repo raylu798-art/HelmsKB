@@ -3,7 +3,7 @@
 先阅读 AGENTS.md 并核对编号、Git remote 和环境。业务源码与原始文档跟随完整上游；集中品牌配置为 helmskb/branding/brand.json。
 
 1. 固定干净的源码提交，安装 helmskb/build/package-lock.json 的依赖并运行测试。
-2. node helmskb/build/prepare.mjs 生成 .helmskb/source/ 和来源清单，未知桥接形态直接失败。
+2. node helmskb/build/prepare.mjs 生成独立的 .helmskb/stages/ 版本化目录和来源清单，未知桥接形态直接失败；使用 run-staged.mjs 在清单对应的目录执行命令。
 3. node helmskb/build/build-web.mjs 按锁文件串行验证与构建文档、前端。文档复制到暂存前端 /docs/；用 helmskb/build/Dockerfile.frontend 打包。
 4. 同一暂存树构建 Go、AnyDoc、BrowserSkill、DocReader 及迁移；保留上游运行依赖和许可材料。可复用缓存，不能复用旧应用实现。
 5. 记录来源、镜像摘要、迁移版本和验收；按同一镜像摘要晋级。

@@ -2,9 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { root } from './boundary.mjs';
-const stage=path.join(root,'.helmskb/source');
-if(!fs.existsSync(path.join(stage,'helmskb-generated-source.json')))throw Error('Prepare a source stage first');
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'.helmskb/source-manifest.json')));
+const stage=manifest.stage;
+if(!stage.startsWith(path.join(root,'.helmskb')+path.sep)||!fs.existsSync(path.join(stage,'helmskb-generated-source.json')))throw Error('Prepare a source stage first');
 const npm=process.platform==='win32'?'npm.cmd':'npm';
 function run(directory,args){const r=spawnSync(npm,args,{cwd:path.join(stage,directory),stdio:'inherit',shell:process.platform==='win32',env:{...process.env,NODE_OPTIONS:'--max-old-space-size=3072',VITE_FRONTEND_COMMIT:manifest.sourceCommit,VITE_IS_DOCKER:'true'}});if(r.status!==0)process.exit(r.status||1)}
 for(const directory of ['website-docs','frontend'])run(directory,['ci','--no-audit','--no-fund']);

@@ -34,8 +34,7 @@ jobs:
         with: {go-version-file: go.mod}
       - run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
       - run: npm ci --prefix helmskb/build --no-audit --no-fund && node helmskb/build/prepare.mjs
-      - run: go test ./internal/productdocs ./internal/agent/... ./internal/handler/... ./internal/application/service/...
-        working-directory: .helmskb/source
+      - run: node helmskb/build/run-staged.mjs go test ./internal/productdocs ./internal/agent/... ./internal/handler/... ./internal/application/service/...
   docreader:
     runs-on: ubuntu-latest
     steps:

@@ -20,7 +20,7 @@ node helmskb/build/prepare.mjs
 node helmskb/build/build-web.mjs
 ```
 
-使用 Node.js 24。发行构建要求干净的已提交源码。品牌转换只写入被忽略的 .helmskb/source/，原始工作区保持不变。开发中可用 prepare.mjs --allow-dirty；该结果标记 dirty，不能作为验收发行产物。完整前端与本站 /docs/ 从同一份品牌化文档生成，后端也编译这份文档。
+使用 Node.js 24。发行构建要求干净的已提交源码。品牌转换只写入被忽略的 .helmskb/stages/ 下的版本化目录，位置记录于 .helmskb/source-manifest.json；原始工作区保持不变，旧暂存目录不会被新构建删除。开发中可用 prepare.mjs --allow-dirty；该结果标记 dirty，不能作为验收发行产物。完整前端与本站 /docs/ 从同一份品牌化文档生成，后端也编译这份文档。
 
 业务 API、Go 模块路径、迁移编号、数据库字段与资源 ID 保持兼容。第三方服务名称、代码示例和许可证保持原样。显示品牌不影响用户资料内容。
 

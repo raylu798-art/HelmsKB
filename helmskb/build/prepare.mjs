@@ -11,18 +11,10 @@ export function prepare({allowDirty=false}={}){
   checkBoundary();
   if(!allowDirty&&git(['status','--porcelain']).toString().trim())throw Error('Release preparation requires a clean source commit');
   const head=git(['rev-parse','HEAD']).toString().trim();
-  const parent=path.join(root,'.helmskb');const stage=path.join(parent,'source');
-  fs.mkdirSync(parent,{recursive:true});
-  if(fs.existsSync(stage)){
-    if(fs.lstatSync(stage).isSymbolicLink()||!fs.existsSync(path.join(stage,'helmskb-generated-source.json')))throw Error('Unowned build stage');
-    if(fs.realpathSync(path.dirname(stage))!==fs.realpathSync(parent))throw Error('Build stage escaped its directory');
-    for(const directory of ['frontend','website-docs']){
-      const dependency=path.join(stage,directory,'node_modules');const cache=path.join(parent,'dependency-cache',directory);
-      if(fs.existsSync(dependency)){fs.mkdirSync(path.dirname(cache),{recursive:true});if(fs.existsSync(cache))fs.rmSync(cache,{recursive:true,force:true});fs.renameSync(dependency,cache)}
-    }
-    fs.rmSync(stage,{recursive:true,force:true});
-  }
-  fs.mkdirSync(stage);
+  const parent=path.join(root,'.helmskb');
+  fs.mkdirSync(path.join(parent,'stages'),{recursive:true});
+  // Never clear an active stage: containers and editors can still hold it.
+  const stage=fs.mkdtempSync(path.join(parent,'stages',head.slice(0,12)+'-'));
   const files=git(['ls-files','--cached','--others','--exclude-standard','-z']).toString().split('\0').filter(Boolean);
   const report=[];
   for(const file of files){
@@ -32,7 +24,6 @@ export function prepare({allowDirty=false}={}){
     const to=path.join(stage,file);fs.mkdirSync(path.dirname(to),{recursive:true});fs.copyFileSync(from,to);
   }
   fs.writeFileSync(path.join(stage,'helmskb-generated-source.json'),JSON.stringify({source:root,head,generated:true}));
-  for(const directory of ['frontend','website-docs']){const cache=path.join(parent,'dependency-cache',directory);if(fs.existsSync(cache))fs.renameSync(cache,path.join(stage,directory,'node_modules'))}
   function edit(file,change){
     const target=path.join(stage,file);const before=fs.readFileSync(target,'utf8');const after=change(before);
     if(before===after)throw Error('Bridge produced no change: '+file);
@@ -94,7 +85,8 @@ export function prepare({allowDirty=false}={}){
     if(fs.existsSync(original)&&(!fs.existsSync(generated)||!fs.readFileSync(original).equals(fs.readFileSync(generated))))throw Error('Unapproved staging mutation: '+file);
   }
   const manifest={schemaVersion:1,distributionVersion:lock.distributionVersion,sourceCommit:head,upstreamCommit:lock.commit,upstreamVersion:lock.upstreamVersion,brandProfileVersion:brand.profileVersion,brandProfileSha256:brandHash,postgresMigration:lock.postgresMigration,dirty:allowDirty,stage,bridges:report};
-  fs.writeFileSync(path.join(stage,'frontend/public/helmskb-build.json'),JSON.stringify(manifest,null,2));
+  const {stage:privatePath,bridges,...publicManifest}=manifest;
+  fs.writeFileSync(path.join(stage,'frontend/public/helmskb-build.json'),JSON.stringify(publicManifest,null,2));
   fs.writeFileSync(path.join(parent,'source-manifest.json'),JSON.stringify(manifest,null,2));
   for(const entry of report){if(!ownership.stagedBridgeFiles.includes(entry.path)&&!entry.path.startsWith(ownership.stagedMarkdownPrefix))throw Error('Unapproved generated bridge: '+entry.path)}
   console.log(JSON.stringify({stage,sourceCommit:head,upstreamCommit:lock.commit,transformedFiles:report.length,rawBusinessSource:'unchanged'},null,2));
