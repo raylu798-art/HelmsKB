@@ -1,6 +1,6 @@
 param([Parameter(Mandatory)][string]$RuntimePath,[string]$Compiler='p006-helmskb-test-compiler-v2')
 $ErrorActionPreference='Stop'
-$script:DockerExecutable=(Get-Command docker -CommandType Application).Source
+$script:DockerExecutable=(Get-Command docker -CommandType Application|Select-Object -First 1).Source
 $postgres='p006-helmskb-test-postgres'
 if($Compiler -notmatch '^p006-helmskb-test-'){throw 'Compiler must belong to P006/test'}
 $run=Get-Date -Format 'yyyyMMddHHmmss'
@@ -18,8 +18,8 @@ foreach($baseline in @(118,120)){
  Docker @('exec',$postgres,'createdb','-U','p006_test',$database)|Out-Null
  Migrate $database $baseline
  $seed=@'
-INSERT INTO tenants(id,name,description,api_key,business) VALUES(606000,'HelmsKB synthetic upgrade fixture','P006/test only','synthetic-not-a-real-credential','test');
-INSERT INTO knowledge_bases(id,tenant_id,name,embedding_model_id,summary_model_id,rerank_model_id) VALUES('60000000-0000-0000-0000-000000000001',606000,'Synthetic migration knowledge','','','');
+INSERT INTO tenants(id,name,description,business) VALUES(606000,'HelmsKB synthetic upgrade fixture','P006/test only','test');
+INSERT INTO knowledge_bases(id,tenant_id,name,embedding_model_id,summary_model_id) VALUES('60000000-0000-0000-0000-000000000001',606000,'Synthetic migration knowledge','','');
 INSERT INTO knowledges(id,tenant_id,knowledge_base_id,type,title,source,parse_status) VALUES('60000000-0000-0000-0000-000000000002',606000,'60000000-0000-0000-0000-000000000001','manual','P006 synthetic procedure','synthetic','completed');
 '@
  Sql $database $seed|Out-Null
@@ -32,8 +32,8 @@ INSERT INTO knowledges(id,tenant_id,knowledge_base_id,type,title,source,parse_st
  Migrate $database 134
  $version=(Sql $database 'SELECT version||'':''||dirty FROM schema_migrations').Trim()
  if($version -ne '134:false' -or (Sql $database $query) -ne $before){throw 'Upgrade version or synthetic data changed'}
- Sql $database "SELECT 1 FROM information_schema.columns WHERE table_name='tenants' AND column_name='default_settings'"|Out-Null
- Docker @('exec',$postgres,'createdb','-U','p006_test',$restored)|Out-Null
+ if((Sql $database "SELECT count(*) FROM information_schema.columns WHERE table_name='tenants' AND column_name='default_settings'").Trim() -ne '1'){throw 'Target default settings schema missing'}
+ Docker @('exec',$postgres,'createdb','-U','p006_test','-T','template0',$restored)|Out-Null
  Docker @('exec',$postgres,'pg_restore','-U','p006_test','-d',$restored,'--exit-on-error',$backup)|Out-Null
  $restoredVersion=(Sql $restored 'SELECT version||'':''||dirty FROM schema_migrations').Trim()
  if($restoredVersion -ne "${baseline}:false" -or (Sql $restored $query) -ne $before){throw 'Independent database restore mismatch'}
