@@ -3,7 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { root,lock,ownership,git,checkBoundary } from './boundary.mjs';
-import { transformMarkdown,executableFences,transformYaml,replaceExact } from './transform.mjs';
+import { transformMarkdown,executableFences,transformYaml,replaceExact,normalizeRegistry } from './transform.mjs';
 
 export const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const brand=JSON.parse(fs.readFileSync(path.join(root,'helmskb/branding/brand.json'),'utf8'));
@@ -52,7 +52,8 @@ export function prepare({allowDirty=false}={}){
   for(const file of ['frontend/index.html','frontend/embed.html'])edit(file,s=>s.replace(/<title>([^<]+)<\/title>/,(_,title)=>`<title>${title.replace('WeKnora',brand.name)}</title>`).replace(/(<meta name="description" content=")([^"]*)"/,(_,prefix,text)=>prefix+text.replace('WeKnora',brand.name)+'"'));
   edit('frontend/vite.config.ts',s=>replaceExact(s,'export default defineConfig({','export default defineConfig({\n  css: { preprocessorMaxWorkers: 1 },'));
   edit('frontend/nginx.conf',s=>replaceExact(s,'    # Static widget loader for third-party sites','    location ^~ /docs/ {\n        root /usr/share/nginx/html;\n        try_files $uri $uri.html $uri/ =404;\n    }\n\n    # Static widget loader for third-party sites'));
-  for(const file of ['frontend/package.json','frontend/package-lock.json'])edit(file,s=>{const j=JSON.parse(s);j.version=lock.distributionVersion;if(j.packages?.[''])j.packages[''].version=lock.distributionVersion;return JSON.stringify(j,null,2)+'\n'});
+  for(const file of ['frontend/package.json','frontend/package-lock.json'])edit(file,s=>{const j=normalizeRegistry(JSON.parse(s));j.version=lock.distributionVersion;if(j.packages?.[''])j.packages[''].version=lock.distributionVersion;return JSON.stringify(j,null,2)+'\n'});
+  edit('website-docs/package-lock.json',s=>JSON.stringify(normalizeRegistry(JSON.parse(s)),null,2)+'\n');
   edit('website-docs/.vitepress/config.mts',s=>{
     s=replaceExact(s,"const repo = 'https://github.com/Tencent/WeKnora'",`const repo = '${brand.repository}'`);
     s=replaceExact(s,"title: 'WeKnora'",`title: '${brand.name}'`);

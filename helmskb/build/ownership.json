@@ -8,7 +8,7 @@
     "frontend/src/components/UserMenu.vue", "frontend/src/views/settings/SystemInfo.vue",
     "frontend/src/utils/docsUrl.ts", "frontend/index.html", "frontend/embed.html", "frontend/vite.config.ts",
     "frontend/nginx.conf", "frontend/package.json", "frontend/package-lock.json",
-    "website-docs/.vitepress/config.mts", "website-docs/.vitepress/theme/SiteHeader.vue", "website-docs/shared/header.ts",
+    "website-docs/.vitepress/config.mts", "website-docs/.vitepress/theme/SiteHeader.vue", "website-docs/shared/header.ts", "website-docs/package-lock.json",
     "internal/productdocs/markdown.go", "internal/productdocs/library.go", "internal/agent/tools/operations.go", "internal/agent/tools/product_docs.go",
     "config/builtin_agents.yaml", "config/prompt_templates/agent_system_prompt.yaml"
   ],

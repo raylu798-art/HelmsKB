@@ -4,6 +4,11 @@ import { parseDocument, visit } from 'yaml';
 import { brandProse } from '../branding/prose.mjs';
 
 const md=new MarkdownIt({html:true});
+export function normalizeRegistry(lock){
+  const copy=structuredClone(lock);
+  for(const entry of Object.values(copy.packages||{}))if(entry.resolved?.startsWith('https://mirrors.tencent.com/npm/'))entry.resolved='https://registry.npmjs.org/'+entry.resolved.slice('https://mirrors.tencent.com/npm/'.length);
+  return copy;
+}
 export function transformMarkdown(raw,brand){
   const lines=raw.split('\n');const protectedLines=new Set();const mermaidLines=new Set();
   for(const token of md.parse(raw,{})){

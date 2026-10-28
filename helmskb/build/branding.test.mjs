@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import fs from 'node:fs';
 import { brandProse,brandMessages } from '../branding/prose.mjs';
-import { transformMarkdown,executableFences,transformYaml,replaceExact } from './transform.mjs';
+import { transformMarkdown,executableFences,transformYaml,replaceExact,normalizeRegistry } from './transform.mjs';
 import { checkBoundary } from './boundary.mjs';
 const brand=JSON.parse(fs.readFileSync(new URL('../branding/brand.json',import.meta.url)));
 
@@ -26,4 +26,8 @@ test('structured YAML branding leaves IDs, tools, model settings and selection r
  assert.match(after,/name: HelmsKB Assistant/);assert.match(after,/id: builtin-weknora-assistant/);assert.match(after,/read_weknora_doc/);
 });
 test('a changed upstream bridge fails closed instead of silently missing branding',()=>assert.throws(()=>replaceExact('new shape','old shape','replacement'),/Unknown bridge shape/));
+test('registry delivery changes preserve pinned versions, integrity and non-registry archives',()=>{
+ const lock={packages:{a:{version:'1',resolved:'https://mirrors.tencent.com/npm/a/-/a-1.tgz',integrity:'sha512-pinned'},sheet:{resolved:'https://cdn.sheetjs.com/a.tgz'}}};
+ const after=normalizeRegistry(lock);assert.equal(after.packages.a.resolved,'https://registry.npmjs.org/a/-/a-1.tgz');assert.equal(after.packages.a.integrity,lock.packages.a.integrity);assert.deepEqual(after.packages.sheet,lock.packages.sheet);assert.equal(lock.packages.a.resolved,'https://mirrors.tencent.com/npm/a/-/a-1.tgz');
+});
 test('all raw upstream business files remain outside the downstream change set',()=>assert.deepEqual(checkBoundary().unapprovedFiles,[]));
