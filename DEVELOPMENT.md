@@ -42,7 +42,7 @@ docker build --pull=false -f frontend/Dockerfile.helmskb -t p006-helmskb-local-u
 
 ## 助手后端构建
 
-单项助手移植的运行版本为 `0.8.3-helmskb-assistant.1`。需要 Go 1.26、Rust 1.90 或兼容版本、C/C++ 编译器及与 Debian Bookworm 兼容的构建环境。依赖由 `go.sum` 和 AnyDoc 的 `Cargo.lock` 校验，保留校验服务。Linux amd64 构建示例：
+单项助手移植的运行版本为 `0.8.3-helmskb-assistant.1`。需要 Go 1.26、Rust 1.90 或兼容版本、C/C++ 编译器、SQLite 开发头文件（Debian 的 `libsqlite3-dev`）及与 Debian Bookworm 兼容的构建环境。依赖由 `go.sum` 和 AnyDoc 的 `Cargo.lock` 校验，保留校验服务。Linux amd64 构建示例：
 
 ```bash
 export GOMAXPROCS=2 GOFLAGS=-p=2 CARGO_BUILD_JOBS=2
@@ -54,6 +54,8 @@ docker build --pull=false -f docker/Dockerfile.helmskb-runtime \
 ```
 
 打包基于固定的官方 v0.8.3 运行镜像，保留原有原生依赖、BrowserSkill 与第三方对应源码，只替换完整编译的服务、助手配置及已审阅迁移。生成的 `build/` 不提交；发布必须记录源码提交、二进制 SHA-256、镜像摘要和迁移结果。该命令不自动部署。助手测试与迁移说明见 [移植记录](docs/engineering/assistant-backport.md)。
+
+没有本机工具链时，可使用 `docker/Dockerfile.helmskb-builder` 构建独立的 P006 编译环境。该文件固定 Go 和 Rust 基础镜像并安装 SQLite 头文件；源目录挂到 `/src`，Go 模块与编译缓存分别使用本项目的独立命名卷。在该容器内运行上述脚本，随后在宿主机打包运行镜像。编译环境不挂载 Docker socket、运行环境的 `.env` 或业务数据。
 
 ## 环境隔离
 
